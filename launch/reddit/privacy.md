@@ -9,6 +9,6 @@ Madobe is a WKWebView, the same engine Safari uses, wrapped in the smallest Swif
 
 It's free, runs on Mac, iPhone and iPad, and the source is public if you want to check the collects-nothing claim yourself.
 
-Web: https://madobe.heyitsmejosh.com
+Web: https://madobe.jaybulb.com
 App Store: https://apps.apple.com/app/id6809355192
 GitHub: https://github.com/nulljosh/madobe

@@ -11,6 +11,6 @@ The only real logic is a single function that decides how to read what you typed
 
 It's free, it's on the App Store for Mac and iOS, and the source is up on GitHub. Would love feedback on what, if anything, is actually missing.
 
-Web: https://madobe.heyitsmejosh.com
+Web: https://madobe.jaybulb.com
 App Store: https://apps.apple.com/app/id6809355192
 GitHub: https://github.com/nulljosh/madobe

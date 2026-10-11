@@ -16,6 +16,6 @@ Bookmarks, history UI, sync and telemetry are deliberately missing. Each one is 
 Madobe is Free, and it stays free. Browsers are free by convention, nobody pays for one, so building a business on top of the one thing every OS gives away for free never made sense to me.
 
 Links:
-Web: https://madobe.heyitsmejosh.com
+Web: https://madobe.jaybulb.com
 App Store: https://apps.apple.com/app/id6809355192
 GitHub: https://github.com/nulljosh/madobe

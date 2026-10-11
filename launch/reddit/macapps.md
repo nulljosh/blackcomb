@@ -7,6 +7,6 @@ I kept wanting a browser for quick lookups that didn't come with a tab strip ful
 
 Built as one Swift file, one xcodegen target shared with the iOS and iPadOS versions. Free on the App Store, source on GitHub.
 
-Web: https://madobe.heyitsmejosh.com
+Web: https://madobe.jaybulb.com
 App Store: https://apps.apple.com/app/id6809355192
 GitHub: https://github.com/nulljosh/madobe

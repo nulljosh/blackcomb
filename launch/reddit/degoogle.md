@@ -9,6 +9,6 @@ Madobe wraps WKWebView, so it's Safari's own engine under the hood, not a new re
 
 Free, on the App Store for Mac and iOS, source is open if you want to see exactly what it does with what you type.
 
-Web: https://madobe.heyitsmejosh.com
+Web: https://madobe.jaybulb.com
 App Store: https://apps.apple.com/app/id6809355192
 GitHub: https://github.com/nulljosh/madobe

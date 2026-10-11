@@ -5,4 +5,4 @@ Post 2:
 One SwiftUI file. A WKWebView owned by a Page object, mirrored into state: address, title, loading, back, forward. Type a host and it loads. Type words and it searches DuckDuckGo. Ships to Mac, iPhone and iPad from the same target.
 
 Post 3:
-No bookmarks, no sync, no telemetry, no account. Free, because browsers are free by convention and nobody pays for one. Live now: https://madobe.heyitsmejosh.com
+No bookmarks, no sync, no telemetry, no account. Free, because browsers are free by convention and nobody pays for one. Live now: https://madobe.jaybulb.com

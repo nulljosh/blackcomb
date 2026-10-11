@@ -9,6 +9,6 @@ The only app logic beyond that is a single resolve() function that turns typed t
 
 Free on the App Store, source is up if anyone wants to see how little code it takes.
 
-Web: https://madobe.heyitsmejosh.com
+Web: https://madobe.jaybulb.com
 App Store: https://apps.apple.com/app/id6809355192
 GitHub: https://github.com/nulljosh/madobe
