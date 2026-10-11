@@ -10,3 +10,7 @@ run_worker_first = ["/go"]
 [[routes]]
 pattern = "madobe.heyitsmejosh.com"
 custom_domain = true
+
+[[routes]]
+pattern = "madobe.jaybulb.com"
+custom_domain = true
