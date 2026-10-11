@@ -9,14 +9,14 @@
 <meta property="og:title" content="Madobe — a web browser">
 <meta property="og:description" content="A text field and a WebKit view. Mac, iPhone, iPad.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://madobe.heyitsmejosh.com">
+<meta property="og:url" content="https://madobe.jaybulb.com">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Madobe — a web browser">
 <meta name="twitter:description" content="A text field and a WebKit view. Mac, iPhone, iPad.">
-<link rel="canonical" href="https://madobe.heyitsmejosh.com">
+<link rel="canonical" href="https://madobe.jaybulb.com">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <style>
-@import url("https://heyitsmejosh.com/tokens.css");
+@import url("https://jaybulb.com/tokens.css");
 :root{--ink:#1d1d1f;--paper:#f5f5f7;--bar:#fff;--field:#f5f5f7;--dim:#6e6e73;}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bar:#1e1e20;--field:#2c2c2e;--dim:#98989d;}}
 :root[data-theme="dark"]{--bar:#1e1e20;--field:#2c2c2e;--dim:#98989d;}
@@ -42,7 +42,7 @@ iframe{flex:1;width:100%;border:0;background:#fff}
   <a class="brand" href="/" aria-label="Madobe home"><img src="icon.svg" alt=""><span>Madobe</span></a>
   <button type="button" id="back" aria-label="Back">‹</button>
   <button type="button" id="fwd" aria-label="Forward">›</button>
-  <input id="addr" value="madobe.heyitsmejosh.com" aria-label="Search or enter address" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Search or enter address">
+  <input id="addr" value="madobe.jaybulb.com" aria-label="Search or enter address" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Search or enter address">
   <button type="submit" id="go" aria-label="Reload">↻</button>
   <a class="src" href="https://github.com/nulljosh/madobe">Source</a>
 </form>
@@ -53,7 +53,7 @@ function resolve(s){s=s.trim();if(!s)return null;if(s.includes('://'))return s;i
 const f=document.getElementById('bar'),a=document.getElementById('addr'),p=document.getElementById('page');
 const hist=['start.html'];let i=0;
 // Any address loads through /go, which strips the headers that block framing (see worker/index.js). Search stays on Wikipedia.
-function show(u){p.removeAttribute('srcdoc');p.src=u==='start.html'?u:'/go?u='+encodeURIComponent(u);a.value=u==='start.html'?'madobe.heyitsmejosh.com':u.replace(/^https?:\/\//,'');document.getElementById('back').disabled=i===0;document.getElementById('fwd').disabled=i===hist.length-1}
+function show(u){p.removeAttribute('srcdoc');p.src=u==='start.html'?u:'/go?u='+encodeURIComponent(u);a.value=u==='start.html'?'madobe.jaybulb.com':u.replace(/^https?:\/\//,'');document.getElementById('back').disabled=i===0;document.getElementById('fwd').disabled=i===hist.length-1}
 function nav(u){hist.splice(i+1);hist.push(u);i=hist.length-1;show(u);a.blur()}
 f.addEventListener('submit',e=>{e.preventDefault();const u=resolve(a.value);if(u)nav(u)});
 addEventListener('message',e=>{const u=e.data&&e.data.madobe;if(e.source===p.contentWindow&&typeof u==='string'&&/^https?:/.test(u))nav(u)});

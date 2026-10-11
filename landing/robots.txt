@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://madobe.heyitsmejosh.com/sitemap.xml
+Sitemap: https://madobe.jaybulb.com/sitemap.xml
