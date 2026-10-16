@@ -2,7 +2,7 @@
 
 # madobe
 
-![version](https://img.shields.io/badge/version-v1.0.0-blue) ![license](https://img.shields.io/badge/license-MIT-green) [![GitHub](https://img.shields.io/badge/GitHub-nulljosh%2Fmadobe-black?logo=github)](https://github.com/nulljosh/madobe)
+![version](https://img.shields.io/badge/version-v1.0.0-blue) ![license](https://img.shields.io/badge/license-MIT-green)
 
 A web browser is a text field and a WebKit view. Everything else is opinion. A madobe is a small window in a roof; this is a small window on the web.
 
