@@ -1,15 +1,52 @@
 {
-  "fill" : {
-    "solid" : "extended-srgb:0.11373,0.11373,0.12157,1.00000"
-  },
-  "groups" : [
+  "fill-specializations": [
     {
-      "layers" : [ { "image-name" : "globe.svg", "name" : "globe", "glass" : true } ],
-      "shadow" : { "kind" : "neutral", "opacity" : 0.5 },
-      "translucency" : { "enabled" : false, "value" : 0.5 }
+      "value": {
+        "linear-gradient": [
+          "extended-srgb:0.302,0.722,1.000,1.0",
+          "extended-srgb:0.039,0.373,0.839,1.0"
+        ]
+      }
+    },
+    {
+      "appearance": "dark",
+      "value": {
+        "linear-gradient": [
+          "extended-srgb:0.011,0.104,0.235,1.0",
+          "extended-srgb:0.005,0.045,0.101,1.0"
+        ]
+      }
     }
   ],
-  "supported-platforms" : {
-    "squares" : "shared"
+  "groups": [
+    {
+      "layers": [
+        {
+          "glass": true,
+          "image-name": "peak-front.png",
+          "name": "Front peak"
+        },
+        {
+          "glass": true,
+          "image-name": "peak-back.png",
+          "name": "Back peak",
+          "opacity": 0.55
+        }
+      ],
+      "lighting": "individual",
+      "name": "Blackcomb",
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0.3
+      },
+      "specular": true,
+      "translucency": {
+        "enabled": false,
+        "value": 0
+      }
+    }
+  ],
+  "supported-platforms": {
+    "squares": "shared"
   }
 }

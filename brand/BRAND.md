@@ -1,6 +1,6 @@
 # Blackcomb brand kit and design system
 
-a window
+two peaks, the mountain above Whistler
 
 ## The mark
 One bold flat white glyph on an accent gradient tile. No text, no outline, no emblem.
@@ -13,8 +13,8 @@ One bold flat white glyph on an accent gradient tile. No text, no outline, no em
 ## Colour
 | Role | Value |
 |---|---|
-| Accent | `#7aa10a` |
-| Gradient top | `#c6e03a` |
+| Accent | `#0a5fd6` |
+| Gradient top | `#4db8ff` |
 | Text | `#1d1d1f` light, `#f5f5f7` dark |
 | Background | `#ffffff` light, `#000000` dark |
 | Surface | `#f5f5f7` light, `#1c1c1e` dark |

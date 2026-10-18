@@ -2,26 +2,26 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Start</title>
+<title>Blackcomb</title>
 <style>
 @import url("https://jaybulb.com/tokens.css");
-:root{--ink:#1d1d1f;--paper:#f5f5f7;--accent:var(--ink);--link:var(--ink);--bg:var(--paper);--bg2:var(--paper);--border:#d2d2d7;--btn-fg:#fff;}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--accent:var(--paper);--link:var(--paper);--bg:#1e1e20;--bg2:#2c2c2e;--border:#3a3a3c;--btn-fg:var(--ink);}}
-:root[data-theme="dark"]{--accent:var(--paper);--link:var(--paper);--bg:#1e1e20;--bg2:#2c2c2e;--border:#3a3a3c;--btn-fg:var(--ink);}
+:root{--ink:#1d1d1f;--paper:#f5f5f7;--accent:#0a5fd6;--link:#0a5fd6;--bg:var(--paper);--bg2:var(--paper);--border:#d2d2d7;--btn-fg:#fff;--soft:#6e6e73;}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--accent:#2997ff;--link:#2997ff;--bg:#000;--bg2:#1c1c1e;--border:#38383a;--btn-fg:#fff;--soft:#98989d;}}
+:root[data-theme="dark"]{--accent:#2997ff;--link:#2997ff;--bg:#000;--bg2:#1c1c1e;--border:#38383a;--btn-fg:#fff;--soft:#98989d;}
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:var(--bg);color:var(--text);font-family:var(--font-body);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column}
 a{color:var(--link);text-decoration:none}a:hover{text-decoration:underline}
 .hero{padding:clamp(4rem,10vw,7rem) 2rem 4rem;text-align:center;background:var(--bg2)}
-.hero-icon{width:88px;height:88px;border-radius:20px}
+.hero-icon{width:88px;height:88px;border-radius:22%}
 h1{font-size:clamp(2.2rem,6vw,3.2rem);line-height:1.1;letter-spacing:-0.02em;margin-top:1.25rem}
 .tagline{color:var(--text2);font-size:1.2rem;margin:1.25rem auto 2rem;max-width:32rem}
 .cta{display:inline-flex;gap:.75rem;flex-wrap:wrap;justify-content:center}
-.btn{display:inline-block;padding:.8rem 1.75rem;border-radius:6px;font-weight:600;border:1px solid var(--accent);background:var(--accent);color:var(--btn-fg)}
+.btn{display:inline-flex;align-items:center;justify-content:center;height:48px;padding:0 24px;border-radius:999px;font-weight:600;border:1px solid var(--accent);background:var(--accent);color:var(--btn-fg);transition:opacity .2s}.btn:hover{opacity:.88;text-decoration:none}.btn:focus-visible{outline:none;box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 30%,transparent)}
 .btn.ghost{background:transparent;color:var(--link)}
 section{padding:4rem 2rem;border-top:1px solid var(--border);max-width:800px;margin:0 auto;width:100%}
 h2{font-size:1.65rem;letter-spacing:-0.01em;margin-bottom:1.25rem}
 p+p{margin-top:1rem}
-.hint{color:var(--text2);font-size:.95rem;margin-top:2rem}
+.hint{color:var(--soft);font-size:.95rem;margin-top:2rem}@media (prefers-reduced-motion:reduce){.btn{transition:none}}
 
 /* detailed footer, ported from Joshua Tree */
 footer.foot{margin:auto 0 0;padding:48px 0 32px;border-top:1px solid var(--border);border:0;background:none;text-align:left;font-size:13px;color:var(--text2)}

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Blackcomb — a browser that writes no browser code</title>
+<title>Blackcomb — a web browser</title>
 <meta name="description" content="A WebKit browser for Mac, iPhone and iPad. Address bar, back, forward, reload, tabs. Nothing else until there's a reason. This page is the demo.">
 <meta name="theme-color" content="#f5f5f7">
 <meta property="og:title" content="Blackcomb — a web browser">
@@ -17,20 +17,20 @@
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <style>
 @import url("https://jaybulb.com/tokens.css");
-:root{--ink:#1d1d1f;--paper:#f5f5f7;--bar:#fff;--field:#f5f5f7;--dim:#6e6e73;--border:#d2d2d7;}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bar:#1e1e20;--field:#2c2c2e;--dim:#98989d;--border:#3a3a3c;}}
-:root[data-theme="dark"]{--bar:#1e1e20;--field:#2c2c2e;--dim:#98989d;--border:#3a3a3c;}
+:root{--ink:#1d1d1f;--paper:#f5f5f7;--bar:#fff;--field:#f5f5f7;--dim:#6e6e73;--border:#d2d2d7;--accent:#0a5fd6;}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bar:#1c1c1e;--field:#2c2c2e;--dim:#98989d;--border:#38383a;--accent:#2997ff;}}
+:root[data-theme="dark"]{--bar:#1c1c1e;--field:#2c2c2e;--dim:#98989d;--border:#38383a;--accent:#2997ff;}
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%}
 body{background:var(--bg);color:var(--text);font-family:var(--font-body);-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
 .bar{display:flex;align-items:center;gap:6px;padding:8px 10px;background:var(--bar);border-bottom:1px solid var(--border);flex:none}
 .bar .brand{display:flex;align-items:center;gap:8px;font-weight:600;margin-right:6px;color:var(--text);text-decoration:none}
-.bar .brand img{width:22px;height:22px;border-radius:6px}
+.bar .brand img{width:24px;height:24px;border-radius:22%}
 .bar button{background:none;border:0;color:var(--dim);font:inherit;font-size:1.05rem;cursor:pointer;padding:4px 7px;border-radius:6px;line-height:1}
 .bar button:hover{background:var(--field);color:var(--text)}
 .bar button:disabled{opacity:.35;cursor:default;background:none}
-.bar input{flex:1;min-width:0;background:var(--field);border:0;border-radius:8px;padding:7px 12px;color:var(--text);font:inherit;font-size:.95rem;outline:none}
-.bar input:focus{box-shadow:0 0 0 2px var(--accent)}
+.bar input{flex:1;min-width:0;background:var(--field);border:0;border-radius:999px;padding:8px 16px;color:var(--text);font:inherit;font-size:.95rem;outline:none}
+.bar input:focus{box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 30%,transparent)}
 .bar .src{color:var(--dim);font-size:.9rem;text-decoration:none;padding:4px 8px;border-radius:6px}
 .bar .src:hover{background:var(--field);color:var(--text)}
 iframe{flex:1;width:100%;border:0;background:#fff}

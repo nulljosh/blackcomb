@@ -1,7 +1,7 @@
 /* Blackcomb brand tokens. The accent is the only colour this app owns; spacing, radii and type come from the shared system. */
 :root {
-  --accent: #7aa10a;
-  --accent-light: #c6e03a;
-  --accent-deep: #7aa10a;
-  --accent-ring: color-mix(in srgb, #7aa10a 30%, transparent);
+  --accent: #0a5fd6;
+  --accent-light: #4db8ff;
+  --accent-deep: #0a5fd6;
+  --accent-ring: color-mix(in srgb, #0a5fd6 30%, transparent);
 }
