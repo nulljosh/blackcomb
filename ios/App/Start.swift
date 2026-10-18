@@ -32,7 +32,7 @@ struct StartView: View {
                         ForEach(library.history.prefix(8)) { h in row(h.title, h.url) { page.go(h.url) } }
                     }
                 }
-                section("Schooner", symbol: "sailboat") {
+                section("Blackcomb", symbol: "mountain.2") {
                     #if os(macOS)
                     hint("pip", "Float", "Keep a page in a small window above every app. Shift-Command-F.")
                     #else
