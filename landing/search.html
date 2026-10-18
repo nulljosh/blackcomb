@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blackcomb Search</title>
+<meta name="description" content="Answers first. Blackcomb Search shows the answer, the Wikipedia pages, and sends the rest of the web to the search engine you pick.">
+<meta name="theme-color" content="#f5f5f7">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<style>
+:root{--ink:#1d1d1f;--soft:#6e6e73;--paper:#f5f5f7;--card:#fff;--field:#e8e8ed;--line:#d2d2d7;--accent:#0a5fd6;--ring:color-mix(in srgb,var(--accent) 30%,transparent)}
+@media (prefers-color-scheme:dark){:root{--ink:#f5f5f7;--soft:#98989d;--paper:#000;--card:#1c1c1e;--field:#2c2c2e;--line:#38383a;--accent:#2997ff}}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font:17px/24px -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+main{max-width:680px;margin:0 auto;padding:0 20px 64px}
+header{padding:64px 0 32px;text-align:center}
+header img{width:64px;height:64px;border-radius:22%}
+h1{font-size:34px;line-height:41px;letter-spacing:-.022em;margin-top:16px}
+form{display:flex;gap:8px;margin-top:24px}
+input{flex:1;min-width:0;height:48px;border:0;border-radius:999px;background:var(--field);color:var(--ink);font:inherit;padding:0 20px;outline:none}
+input:focus{box-shadow:0 0 0 4px var(--ring)}
+button{height:48px;padding:0 24px;border:0;border-radius:999px;background:var(--accent);color:#fff;font:inherit;font-weight:600;cursor:pointer;transition:opacity .2s}
+button:hover{opacity:.88}button:focus-visible{outline:none;box-shadow:0 0 0 4px var(--ring)}
+.card{background:var(--card);border-radius:28px;padding:24px;margin-top:24px}
+.card p{font-size:17px}.card small{display:block;color:var(--soft);font-size:13px;line-height:18px;margin-top:8px}
+.list{background:var(--card);border-radius:20px;margin-top:24px;overflow:hidden}
+.list a{display:block;padding:12px 16px;color:var(--ink);text-decoration:none}
+.list a+a{border-top:1px solid var(--line);margin-left:16px;padding-left:0;padding-right:16px}
+.list a:hover{background:color-mix(in srgb,var(--accent) 8%,transparent)}
+.list b{display:block;font-weight:600;color:var(--accent)}.list span{display:block;color:var(--soft);font-size:15px;line-height:20px}
+h2{font-size:13px;line-height:18px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em;font-weight:600;margin:32px 16px 0}
+.more{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.more a{display:inline-flex;align-items:center;height:48px;padding:0 24px;border-radius:999px;border:1px solid var(--line);color:var(--ink)}
+.more a:hover{text-decoration:none;border-color:var(--accent);color:var(--accent)}
+.note{color:var(--soft);font-size:13px;line-height:18px;text-align:center;margin-top:48px}
+.empty{color:var(--soft);text-align:center;margin-top:32px}
+@media (prefers-reduced-motion:reduce){button{transition:none}}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <a href="/"><img src="icon.svg" alt="Blackcomb"></a>
+    <h1>Blackcomb Search</h1>
+    <form id="f" role="search"><input id="q" name="q" type="search" placeholder="Search" autocomplete="off" autofocus aria-label="Search"><button>Search</button></form>
+  </header>
+  <div id="out" aria-live="polite"></div>
+  <p class="note">Answers and Wikipedia pages, nothing stored, nothing tracked. For the rest of the web, pick an engine above.</p>
+</main>
+<script>
+const q=document.getElementById('q'),out=document.getElementById('out');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+async function run(term){
+  term=term.trim();
+  if(!term){out.innerHTML='';return}
+  document.title=term+' — Blackcomb Search';
+  out.innerHTML='<p class="empty">Searching…</p>';
+  let d;
+  try{d=await (await fetch('/api/search?q='+encodeURIComponent(term))).json()}catch{out.innerHTML='<p class="empty">Could not search. Check your connection and try again.</p>';return}
+  const e=encodeURIComponent(term);
+  let h='';
+  if(d.answer)h+=`<div class="card"><p>${esc(d.answer.text)}</p><small>${d.answer.url?`<a href="${esc(d.answer.url)}">${esc(d.answer.source)}</a>`:esc(d.answer.source)}</small></div>`;
+  if(d.pages.length)h+=`<h2>Pages</h2><div class="list">${d.pages.map(p=>`<a href="${esc(p.url)}"><b>${esc(p.title)}</b><span>${esc(p.description)}</span></a>`).join('')}</div>`;
+  if(!d.answer&&!d.pages.length)h+='<p class="empty">No answers for that. Try the web below.</p>';
+  h+=`<h2>The rest of the web</h2><div class="more"><a href="https://www.google.com/search?q=${e}">Google</a><a href="https://duckduckgo.com/?q=${e}">DuckDuckGo</a><a href="https://search.brave.com/search?q=${e}">Brave</a></div>`;
+  out.innerHTML=h;
+}
+document.getElementById('f').addEventListener('submit',ev=>{ev.preventDefault();history.replaceState(null,'','?q='+encodeURIComponent(q.value));run(q.value)});
+const start=new URLSearchParams(location.search).get('q');if(start){q.value=start;run(start)}
+</script>
+</body>
+</html>

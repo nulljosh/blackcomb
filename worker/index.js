@@ -7,6 +7,7 @@ const PRIVATE = /^(localhost|.*\.local|.*\.internal|\[.*\]|\d+\.\d+\.\d+\.\d+)$/
 export default {
   async fetch(req, env) {
     const url = new URL(req.url);
+    if (url.pathname === '/api/search') return search(url.searchParams.get('q'));
     if (url.pathname !== '/go') return env.ASSETS.fetch(req);
     if (req.method !== 'GET' || req.headers.get('Sec-Fetch-Dest') !== 'iframe') return new Response('iframe only', { status: 403 });
     let target;
@@ -21,3 +22,22 @@ export default {
     return new Response(html, { headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' } });
   },
 };
+
+// Blackcomb Search: answers, not a web index. Wikipedia titles plus DuckDuckGo's instant answer, both keyless.
+// ponytail: two free sources and a 5 minute edge cache; a real index needs a paid API key (Brave Search), add when wanted.
+const UA = 'Blackcomb/1.0 (https://blackcomb.jaybulb.com)';
+async function search(q) {
+  q = (q || '').trim().slice(0, 200);
+  const json = body => new Response(JSON.stringify(body), { headers: { 'content-type': 'application/json', 'cache-control': 'public, max-age=300' } });
+  if (!q) return json({ q, answer: null, pages: [] });
+  const get = async u => { try { const r = await fetch(u, { headers: { 'User-Agent': UA } }); return r.ok ? await r.json() : null; } catch { return null; } };
+  const enc = encodeURIComponent(q);
+  const [wiki, ddg] = await Promise.all([
+    get(`https://en.wikipedia.org/w/rest.php/v1/search/page?q=${enc}&limit=8`),
+    get(`https://api.duckduckgo.com/?q=${enc}&format=json&no_html=1&skip_disambig=1`),
+  ]);
+  const pages = (wiki?.pages || []).map(p => ({ title: p.title, description: p.description || '', url: 'https://en.wikipedia.org/wiki/' + encodeURIComponent(p.key) }));
+  const text = ddg?.Answer || ddg?.AbstractText || '';
+  const answer = text ? { text: String(text).slice(0, 600), url: ddg.AbstractURL || '', source: ddg.AbstractSource || 'DuckDuckGo' } : null;
+  return json({ q, answer, pages });
+}
