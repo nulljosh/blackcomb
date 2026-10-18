@@ -6,7 +6,9 @@
 
 A web browser is a text field and a WebKit view. Everything else is opinion. A madobe is a small window in a roof; this is a small window on the web.
 
-Madobe is a WebKit browser with three things Safari does not do.
+Madobe is a WebKit browser with four things Safari does not do.
+
+**Reading list (both).** Save a page and its text stays on the device. Read it later without a connection in a plain reader with your own text size, or have it read aloud. A new tab opens on a start page with your reading list, bookmarks and recent pages, not a search engine.
 
 **Float (Mac).** Shift-Command-F pops the current tab into a small window that stays above every other app on every Space and never takes focus. Slide it see-through, turn on click-through so your mouse passes straight to what is underneath, and get back with Option-Command-F or the Madobe icon in the menu bar. It remembers its size and place.
 

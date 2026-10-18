@@ -66,6 +66,11 @@ struct MadobeApp: App {
                 }
                 .keyboardShortcut("d")
                 Button("Show Bookmarks") { services.sheet = .bookmarks }.keyboardShortcut("b", modifiers: [.command, .option])
+                Divider()
+                Button("Save for Later") { services.saveForLater(tabs.page) }
+                    .keyboardShortcut("s")
+                    .disabled(tabs.page.web.url == nil)
+                Button("Show Reading List") { services.sheet = .reading }.keyboardShortcut("r", modifiers: [.command, .option])
             }
             CommandMenu("History") {
                 Button("Show History") { services.sheet = .history }.keyboardShortcut("y")

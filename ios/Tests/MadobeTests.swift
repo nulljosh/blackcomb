@@ -107,6 +107,39 @@ final class LibraryTests: XCTestCase {
         lib.record(title: "", url: "https://a.example")
         XCTAssertEqual(lib.history[0].title, "https://a.example")
     }
+
+    func testSavedPagesPersistAndReplaceByAddress() {
+        let dir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        let lib = Library(directory: dir)
+        lib.savePage(title: "A", url: "https://a.example", text: "first")
+        lib.savePage(title: "B", url: "https://b.example", text: "second")
+        lib.savePage(title: "A again", url: "https://a.example", text: "third")
+        XCTAssertEqual(lib.saved.map(\.text), ["third", "second"])
+        XCTAssertTrue(lib.isSaved("https://a.example"))
+        let again = Library(directory: dir)
+        XCTAssertEqual(again.saved.count, 2, "saved to disk")
+        again.removeSaved([again.saved[0]])
+        XCTAssertEqual(Library(directory: dir).saved.map(\.url), ["https://b.example"])
+    }
+}
+
+@MainActor
+final class ReaderTests: XCTestCase {
+    func testPageTextKeepsTheArticleAndDropsTheChrome() async throws {
+        let page = Page("", services: makeServices())
+        let empty = await page.pageText()
+        XCTAssertNil(empty, "nothing loaded")
+        let body = (0..<12).map { "<p>Paragraph \($0) says enough to pass the short-page check.</p>" }.joined()
+        page.web.loadHTMLString("<nav>Menu</nav><article><h1>Title</h1>\(body)</article><footer>Foot</footer>",
+                                baseURL: URL(string: "https://example.com"))
+        for _ in 0..<100 where page.web.isLoading { try await Task.sleep(for: .milliseconds(50)) }
+        let extracted = await page.pageText()
+        let text = try XCTUnwrap(extracted)
+        XCTAssertTrue(text.hasPrefix("Title\n\nParagraph 0"))
+        XCTAssertTrue(text.contains("Paragraph 11"))
+        XCTAssertFalse(text.contains("Menu"))
+        XCTAssertFalse(text.contains("Foot"))
+    }
 }
 
 @MainActor

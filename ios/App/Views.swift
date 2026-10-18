@@ -25,6 +25,7 @@ struct BrowserView: View {
             case .history: HistoryView(tabs: tabs, library: services.library)
             case .settings: SettingsView(settings: services.settings, library: services.library)
             case .siteRules: SiteRulesView(page: tabs.page, sites: services.sites)
+            case .reading: ReadingListView(tabs: tabs, services: services)
             }
         }
     }
@@ -69,7 +70,12 @@ struct PageView: View {
             if let error = page.errorMessage {
                 Text(error).font(.callout).padding().accessibilityLabel("Page error: " + error)
             }
-            WebView(web: page.web).ignoresSafeArea(edges: .bottom)
+            // A tab that has not loaded anything shows the start page instead of an empty web view.
+            if page.web.url == nil, page.errorMessage == nil {
+                StartView(page: page, services: services)
+            } else {
+                WebView(web: page.web).ignoresSafeArea(edges: .bottom)
+            }
         }
         .navigationTitle(page.title)
         .onChange(of: services.addressFocusTick) { _, _ in editing = true }
@@ -143,6 +149,10 @@ struct PageView: View {
                 .disabled(tabs.pages.count == 1)
             Divider()
             Button { services.finding = true } label: { Label("Find in Page", systemImage: "magnifyingglass") }
+            Button { services.saveForLater(page) } label: {
+                Label(library.isSaved(page.address) ? "Saved for Later" : "Save for Later", systemImage: "text.book.closed")
+            }
+            .disabled(page.web.url == nil)
             Toggle(isOn: $settings.blockTrackers) { Label("Block Trackers and Ads", systemImage: "shield") }
             Button { services.sheet = .siteRules } label: { Label("Site Rules", systemImage: "slider.horizontal.3") }
                 .disabled(SiteKey.key(for: page.web.url) == nil)
@@ -159,6 +169,7 @@ struct PageView: View {
                 Button { openExternally(url) } label: { Label("Open in Default Browser", systemImage: "safari") }
             }
             Divider()
+            Button { services.sheet = .reading } label: { Label("Reading List", systemImage: "text.book.closed") }
             Button { services.sheet = .bookmarks } label: { Label("Bookmarks", systemImage: "star") }
             Button { services.sheet = .history } label: { Label("History", systemImage: "clock") }
             Button { services.sheet = .settings } label: { Label("Settings", systemImage: "gearshape") }
@@ -344,17 +355,21 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Search") {
+                Section {
                     Picker("Search engine", selection: $settings.engine) {
                         ForEach(SearchEngine.allCases) { Text($0.name).tag($0) }
                     }
                     LabeledContent("Homepage") {
-                        TextField("Homepage", text: $settings.homepage)
+                        TextField("Start page", text: $settings.homepage)
                             .multilineTextAlignment(.trailing)
                             #if os(iOS)
                             .keyboardType(.URL).textInputAutocapitalization(.never).autocorrectionDisabled()
                             #endif
                     }
+                } header: {
+                    Text("Search")
+                } footer: {
+                    Text("Leave the homepage empty and new tabs open the start page: search, reading list, bookmarks and recent pages.")
                 }
                 Section {
                     Toggle("Block trackers and ads", isOn: $settings.blockTrackers)

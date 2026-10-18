@@ -10,6 +10,8 @@ v1.0.0, WebKit browser. Renamed from Lucarne 2026-09-14; bundle id stays com.nul
 - `ios/App/Services.swift`: `Settings` (engine, homepage, tracker blocking), `ContentBlocker` (WebKit content rule list of ad and tracking hosts), `Services` (shared state and the open sheet).
 - `ios/App/Views.swift`: browser chrome, tab strip, find bar, Bookmarks, History and Settings screens.
 - `ios/App/SiteRules.swift`: per-site rules (`SiteRule`, `SiteKey`, `SiteRules` store, image-block rule JSON, `RuleListHost`) and the Site Rules sheet. Applied in `Page.decide` (scripts, dark user script, zoom) and a content rule list (images).
+- `ios/App/Start.swift`: the start page a new tab shows (search, reading list, bookmarks, recent, what the app does). Shown while `page.web.url` is nil; an empty homepage setting means the start page.
+- `ios/App/Reader.swift`: the reading list. `Page.textScript`/`pageText()` pull the article text, `Library.savePage` keeps it in `saved.json`, `ReaderView` reads it offline with a text size and read-aloud (`Speaker`, AVSpeechSynthesizer).
 - `ios/App/Pair.swift`: `PairModel` (split, swap, layout rule) shared; `PairView` is iOS only.
 - `ios/App/Float.swift`: `FloatPrefs` (opacity, click-through, saved frame) shared; `FloatController` and `FloatView` (floating NSPanel plus menu bar item) are macOS only.
 - `ios/App/Intents.swift`: App Intents (Open in Madobe; Open in Float Window on Mac). Links queue in `Services.incoming`.

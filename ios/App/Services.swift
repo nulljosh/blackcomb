@@ -18,7 +18,8 @@ final class Settings: ObservableObject {
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         engine = SearchEngine(rawValue: defaults.string(forKey: "engine") ?? "") ?? .duckDuckGo
-        homepage = defaults.string(forKey: "homepage") ?? "https://duckduckgo.com"
+        // Empty means the start page.
+        homepage = defaults.string(forKey: "homepage") ?? ""
         blockTrackers = defaults.object(forKey: "blockTrackers") as? Bool ?? true
     }
 }
@@ -93,9 +94,12 @@ final class Services: ObservableObject {
     static let shared = Services()
 
     enum Sheet: String, Identifiable {
-        case bookmarks, history, settings, siteRules
+        case bookmarks, history, settings, siteRules, reading
         var id: String { rawValue }
     }
+
+    /// A saved page the reading list should open as soon as it appears (from the start page).
+    @Published var openSaved: UUID?
 
     let library: Library
     let settings: Settings
