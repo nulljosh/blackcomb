@@ -15,7 +15,7 @@ QA the browser to A+ as a designer and engineer, get the Mac build back through 
 
 ## Next, in order
 
-1. When the build shows VALID, attach it to the Mac version (`asc versions attach-build --version-id d86659ae-ec7f-48a4-a9bb-ff844decda76 --build-id <id>`).
+1. Do NOT attach build 202610181545: it installs as "Schooner", which Joshua rejected. The ASC listing is back to Madobe (the iOS build in review installs as Madobe; a mismatch is a 2.3.8 rejection). Once Joshua picks a name, change Info.plist, the start page header and icon, the Mac review notes, docs/REVIEW-REPLY.md and memory, bump the build, re-archive, then rename the listing and attach.
 2. Joshua's yes on: the name Schooner, sending `docs/REVIEW-REPLY.md`, and resubmitting Mac. Then send the reply (`asc web review reply`) and submit.
 3. If the name sticks: full rename (folder, GitHub repo, remote, Worker and domain, docs, fleet CLAUDE.md, memory).
 4. Ship the same build to iOS once its current submission resolves.
