@@ -17,7 +17,7 @@ final class Settings: ObservableObject {
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
-        engine = SearchEngine(rawValue: defaults.string(forKey: "engine") ?? "") ?? .duckDuckGo
+        engine = SearchEngine(rawValue: defaults.string(forKey: "engine") ?? "") ?? .google
         // Empty means the start page.
         homepage = defaults.string(forKey: "homepage") ?? ""
         blockTrackers = defaults.object(forKey: "blockTrackers") as? Bool ?? true

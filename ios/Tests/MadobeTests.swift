@@ -13,8 +13,8 @@ final class ResolveTests: XCTestCase {
     func testEmpty() { XCTAssertNil(resolve("  ")) }
     func testFullURL() { XCTAssertEqual(resolve("http://a.b/c")?.absoluteString, "http://a.b/c") }
     func testBareHost() { XCTAssertEqual(resolve("apple.com")?.absoluteString, "https://apple.com") }
-    func testSearch() { XCTAssertEqual(resolve("hello world")?.absoluteString, "https://duckduckgo.com/?q=hello%20world") }
-    func testWordIsSearch() { XCTAssertTrue(resolve("swift")!.absoluteString.hasPrefix("https://duckduckgo.com/")) }
+    func testSearch() { XCTAssertEqual(resolve("hello world")?.absoluteString, "https://www.google.com/search?q=hello%20world") }
+    func testWordIsSearch() { XCTAssertTrue(resolve("swift")!.absoluteString.hasPrefix("https://www.google.com/search")) }
     func testSearchUsesChosenEngine() {
         XCTAssertEqual(resolve("hello", engine: .brave)?.absoluteString, "https://search.brave.com/search?q=hello")
     }
@@ -148,12 +148,12 @@ final class SettingsTests: XCTestCase {
         let defaults = UserDefaults(suiteName: UUID().uuidString)!
         let a = Settings(defaults: defaults)
         XCTAssertTrue(a.blockTrackers, "blocking is on by default")
-        XCTAssertEqual(a.engine, .duckDuckGo)
-        a.engine = .google
+        XCTAssertEqual(a.engine, .google)
+        a.engine = .brave
         a.blockTrackers = false
         a.homepage = "https://example.com"
         let b = Settings(defaults: defaults)
-        XCTAssertEqual(b.engine, .google)
+        XCTAssertEqual(b.engine, .brave)
         XCTAssertFalse(b.blockTrackers)
         XCTAssertEqual(b.homepage, "https://example.com")
     }

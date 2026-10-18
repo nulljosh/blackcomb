@@ -33,7 +33,7 @@ enum SearchEngine: String, CaseIterable, Identifiable {
 }
 
 /// Turns what the user typed into a URL: a scheme-less host gets https, anything else becomes a search.
-func resolve(_ input: String, engine: SearchEngine = .duckDuckGo) -> URL? {
+func resolve(_ input: String, engine: SearchEngine = .google) -> URL? {
     let s = input.trimmingCharacters(in: .whitespacesAndNewlines)
     guard !s.isEmpty else { return nil }
     if s.contains("://"), let u = URL(string: s) { return u }

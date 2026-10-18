@@ -17,7 +17,7 @@ On 4.2. The build you reviewed opened on a DuckDuckGo page, which is why it read
 1. Float (View menu, Shift-Command-F, or ... menu, Float This Page). The page moves into a small window that stays above every other app on every Space and never takes focus. It has an opacity slider, a click-through mode where mouse clicks pass through to the app underneath, a menu bar item, and it remembers its size and place. Safari has no always-on-top page window.
 2. Reading list (Bookmarks menu, Save for Later, Command-S). The page's title, address and text are stored on the device. The reader shows them in native text with an adjustable size, works with no connection, and reads the text aloud with the system voice. The start page lists the saved pages.
 3. Site rules (Site menu, Option-Command-S). For the open site and its subdomains: page zoom, a dark appearance, and blocking images, scripts or pop-ups. Applied through WebKit content rules, a user script and page preferences, stored on the device.
-4. The start page itself: search in the chosen engine (DuckDuckGo, Brave, Ecosia, Startpage or Google), the reading list, bookmarks, recent pages.
+4. The start page itself: search in the chosen engine (Google by default, or DuckDuckGo, Brave, Ecosia, Startpage), the reading list, bookmarks, recent pages.
 5. Tracker and ad blocking with WebKit content rules (on by default), private tabs on a non-persistent data store, bookmarks, history (searchable, clearable), find in page, tab restore, and two Shortcuts actions (Open in Schooner, Open in Float Window).
 
 On 4.3, the nine questions:
