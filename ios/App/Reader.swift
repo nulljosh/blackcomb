@@ -15,7 +15,9 @@ extension Page {
       root.querySelectorAll(blocks).forEach(function (e) {
         if (e.closest(skip) || e.querySelector(blocks)) return;
         var t = e.innerText.trim();
-        if (t) parts.push(t);
+        if (!t) return;
+        if (e.tagName === 'H1' && document.title.trim().indexOf(t) === 0) return;
+        parts.push(t);
       });
       var text = parts.join('\\n\\n');
       return text.length >= 200 ? text : root.innerText.trim();
@@ -140,24 +142,29 @@ struct ReaderView: View {
             VStack(alignment: .leading, spacing: 16) {
                 Text(saved.title).font(.title.bold())
                 Text(saved.url).font(.caption).foregroundStyle(.secondary).lineLimit(1)
+                controls
                 Text(saved.text).font(.system(size: size)).lineSpacing(size * 0.35).textSelection(.enabled)
             }
             .frame(maxWidth: 680, alignment: .leading).padding(24)
             .frame(maxWidth: .infinity)
         }
-        .navigationTitle(saved.title)
-        .toolbar {
-            ToolbarItemGroup {
-                Button { size = max(14, size - 2) } label: { Image(systemName: "textformat.size.smaller") }
-                    .accessibilityLabel("Smaller text")
-                Button { size = min(30, size + 2) } label: { Image(systemName: "textformat.size.larger") }
-                    .accessibilityLabel("Larger text")
-                Button { speaker.toggle(saved.text) } label: { Image(systemName: speaker.speaking ? "stop.fill" : "speaker.wave.2") }
-                    .accessibilityLabel(speaker.speaking ? "Stop reading aloud" : "Read aloud")
-                Button { tabs.page.go(saved.url); services.sheet = nil } label: { Image(systemName: "safari") }
-                    .accessibilityLabel("Open the page")
-            }
-        }
+        .navigationTitle("")
         .onDisappear { speaker.stop() }
+    }
+
+    private var controls: some View {
+        HStack(spacing: 8) {
+            Button { size = max(14, size - 2) } label: { Image(systemName: "textformat.size.smaller") }
+                .accessibilityLabel("Smaller text")
+            Button { size = min(30, size + 2) } label: { Image(systemName: "textformat.size.larger") }
+                .accessibilityLabel("Larger text")
+            Button { speaker.toggle(saved.text) } label: {
+                Label(speaker.speaking ? "Stop" : "Read Aloud", systemImage: speaker.speaking ? "stop.fill" : "speaker.wave.2")
+            }
+            Spacer()
+            Button { tabs.page.go(saved.url); services.sheet = nil } label: { Label("Open Page", systemImage: "safari") }
+        }
+        .buttonStyle(.bordered)
+        .controlSize(.regular)
     }
 }

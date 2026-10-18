@@ -6,9 +6,6 @@ struct StartView: View {
     @ObservedObject var page: Page
     @ObservedObject var services: Services
     @ObservedObject private var library: Library
-    @State private var query = ""
-    @FocusState private var focused: Bool
-
     init(page: Page, services: Services) {
         self.page = page
         self.services = services
@@ -18,7 +15,6 @@ struct StartView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 32) {
-                search
                 if !library.saved.isEmpty {
                     section("Reading List", symbol: "text.book.closed") {
                         ForEach(library.saved.prefix(5)) { s in
@@ -36,7 +32,7 @@ struct StartView: View {
                         ForEach(library.history.prefix(8)) { h in row(h.title, h.url) { page.go(h.url) } }
                     }
                 }
-                section("Madobe", symbol: "macwindow") {
+                section("Schooner", symbol: "sailboat") {
                     #if os(macOS)
                     hint("pip", "Float", "Keep a page in a small window above every app. Shift-Command-F.")
                     #else
@@ -50,23 +46,8 @@ struct StartView: View {
             .frame(maxWidth: 680, alignment: .leading).padding(24)
             .frame(maxWidth: .infinity)
         }
-        .onAppear { focused = true }
-    }
-
-    private var search: some View {
-        HStack(spacing: 8) {
-            Image(systemName: page.isPrivate ? "eyeglasses" : "magnifyingglass").foregroundStyle(.secondary)
-            TextField(page.isPrivate ? "Private tab: search or enter address" : "Search \(services.settings.engine.name) or enter address",
-                      text: $query)
-                .textFieldStyle(.plain)
-                .focused($focused)
-                .onSubmit { page.go(query) }
-                #if os(iOS)
-                .keyboardType(.webSearch).textInputAutocapitalization(.never).autocorrectionDisabled()
-                #endif
-        }
-        .padding(.horizontal, 16).frame(height: 48)
-        .background(.quaternary, in: Capsule())
+        // The address bar is the one place to type, so it takes focus here like Safari's start page.
+        .onAppear { services.addressFocusTick += 1 }
     }
 
     private func section<Content: View>(_ title: String, symbol: String, @ViewBuilder content: () -> Content) -> some View {
