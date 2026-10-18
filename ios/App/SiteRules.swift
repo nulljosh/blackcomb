@@ -1,7 +1,7 @@
 import SwiftUI
 import WebKit
 
-/// What one site is allowed to do in Madobe. Stored on the device, applied through WebKit.
+/// What one site is allowed to do in Blackcomb. Stored on the device, applied through WebKit.
 struct SiteRule: Codable, Equatable {
     static let zoomRange = 0.5...2.0
 
@@ -23,7 +23,7 @@ struct SiteRule: Codable, Equatable {
     static let darkScript = """
     (function () {
       var s = document.createElement('style');
-      s.id = 'madobe-dark';
+      s.id = 'blackcomb-dark';
       s.textContent = 'html{filter:invert(1) hue-rotate(180deg) !important;background:#fff !important}' +
         'img,picture,video,canvas,svg image{filter:invert(1) hue-rotate(180deg) !important}';
       (document.head || document.documentElement).appendChild(s);

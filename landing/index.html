@@ -3,17 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Madobe — a browser that writes no browser code</title>
+<title>Blackcomb — a browser that writes no browser code</title>
 <meta name="description" content="A WebKit browser for Mac, iPhone and iPad. Address bar, back, forward, reload, tabs. Nothing else until there's a reason. This page is the demo.">
 <meta name="theme-color" content="#f5f5f7">
-<meta property="og:title" content="Madobe — a web browser">
+<meta property="og:title" content="Blackcomb — a web browser">
 <meta property="og:description" content="A text field and a WebKit view. Mac, iPhone, iPad.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://madobe.jaybulb.com">
+<meta property="og:url" content="https://blackcomb.jaybulb.com">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Madobe — a web browser">
+<meta name="twitter:title" content="Blackcomb — a web browser">
 <meta name="twitter:description" content="A text field and a WebKit view. Mac, iPhone, iPad.">
-<link rel="canonical" href="https://madobe.jaybulb.com">
+<link rel="canonical" href="https://blackcomb.jaybulb.com">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <style>
 @import url("https://jaybulb.com/tokens.css");
@@ -39,24 +39,24 @@ iframe{flex:1;width:100%;border:0;background:#fff}
 </head>
 <body>
 <form class="bar" id="bar" role="navigation" aria-label="Browser bar">
-  <a class="brand" href="/" aria-label="Madobe home"><img src="icon.svg" alt=""><span>Madobe</span></a>
+  <a class="brand" href="/" aria-label="Blackcomb home"><img src="icon.svg" alt=""><span>Blackcomb</span></a>
   <button type="button" id="back" aria-label="Back">‹</button>
   <button type="button" id="fwd" aria-label="Forward">›</button>
-  <input id="addr" value="madobe.jaybulb.com" aria-label="Search or enter address" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Search or enter address">
+  <input id="addr" value="blackcomb.jaybulb.com" aria-label="Search or enter address" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Search or enter address">
   <button type="submit" id="go" aria-label="Reload">↻</button>
-  <a class="src" href="https://github.com/nulljosh/madobe">Source</a>
+  <a class="src" href="https://github.com/nulljosh/blackcomb">Source</a>
 </form>
-<iframe id="page" src="start.html" title="Madobe" sandbox="allow-scripts allow-forms allow-popups allow-top-navigation-by-user-activation"></iframe>
+<iframe id="page" src="start.html" title="Blackcomb" sandbox="allow-scripts allow-forms allow-popups allow-top-navigation-by-user-activation"></iframe>
 <script>
-// Mirrors resolve() in MadobeApp.swift; Wikipedia stands in for the search engine because DuckDuckGo refuses framing.
+// Mirrors resolve() in BlackcombApp.swift; Wikipedia stands in for the search engine because DuckDuckGo refuses framing.
 function resolve(s){s=s.trim();if(!s)return null;if(s.includes('://'))return s;if(!s.includes(' ')&&s.includes('.'))return 'https://'+s;return 'https://en.wikipedia.org/wiki/Special:Search?search='+encodeURIComponent(s)}
 const f=document.getElementById('bar'),a=document.getElementById('addr'),p=document.getElementById('page');
 const hist=['start.html'];let i=0;
 // Any address loads through /go, which strips the headers that block framing (see worker/index.js). Search stays on Wikipedia.
-function show(u){p.removeAttribute('srcdoc');p.src=u==='start.html'?u:'/go?u='+encodeURIComponent(u);a.value=u==='start.html'?'madobe.jaybulb.com':u.replace(/^https?:\/\//,'');document.getElementById('back').disabled=i===0;document.getElementById('fwd').disabled=i===hist.length-1}
+function show(u){p.removeAttribute('srcdoc');p.src=u==='start.html'?u:'/go?u='+encodeURIComponent(u);a.value=u==='start.html'?'blackcomb.jaybulb.com':u.replace(/^https?:\/\//,'');document.getElementById('back').disabled=i===0;document.getElementById('fwd').disabled=i===hist.length-1}
 function nav(u){hist.splice(i+1);hist.push(u);i=hist.length-1;show(u);a.blur()}
 f.addEventListener('submit',e=>{e.preventDefault();const u=resolve(a.value);if(u)nav(u)});
-addEventListener('message',e=>{const u=e.data&&e.data.madobe;if(e.source===p.contentWindow&&typeof u==='string'&&/^https?:/.test(u))nav(u)});
+addEventListener('message',e=>{const u=e.data&&e.data.blackcomb;if(e.source===p.contentWindow&&typeof u==='string'&&/^https?:/.test(u))nav(u)});
 document.getElementById('back').addEventListener('click',()=>{if(i>0){i--;show(hist[i])}});
 document.getElementById('fwd').addEventListener('click',()=>{if(i<hist.length-1){i++;show(hist[i])}});
 a.addEventListener('focus',()=>a.select());

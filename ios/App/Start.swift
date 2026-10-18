@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// What a new tab shows before it loads anything: a search field, the reading list, bookmarks,
-/// recent pages and the things Madobe does beyond showing a page.
+/// recent pages and the things Blackcomb does beyond showing a page.
 struct StartView: View {
     @ObservedObject var page: Page
     @ObservedObject var services: Services

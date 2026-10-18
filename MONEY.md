@@ -1,6 +1,6 @@
-# Madobe Money
+# Blackcomb Money
 
-How Madobe makes money. The fleet-wide ledger is `GTM.md` in the Code root.
+How Blackcomb makes money. The fleet-wide ledger is `GTM.md` in the Code root.
 
 ## Price
 
@@ -22,6 +22,6 @@ Nothing planned.
 
 `asc pricing schedule create --app 6809355192 --price 0.99 --base-territory USA --start-date YYYY-MM-DD` if that ever changes.
 
-Anyone who got Madobe while it was free keeps it free. Only new customers pay.
+Anyone who got Blackcomb while it was free keeps it free. Only new customers pay.
 
 *ASC 6809355192. Set 2026-09-20.*

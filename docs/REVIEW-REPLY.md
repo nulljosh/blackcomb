@@ -10,7 +10,7 @@ asc web review reply --app 6809355192 --thread cfe87cee-2545-32ca-a87a-76c4318a0
 
 ---
 
-Thank you for the review. Build 202610181700 replaces the one you reviewed and changes what you see at launch, so the answers below describe that build. The app is now named Blackcomb (it was Madobe); the App Store name and the installed name match.
+Thank you for the review. Build 202610181700 replaces the one you reviewed and changes what you see at launch, so the answers below describe that build. The app is now named Blackcomb (it was Blackcomb); the App Store name and the installed name match.
 
 On 4.2. The build you reviewed opened on a DuckDuckGo page, which is why it read as an integration of a search engine. The new build opens on a native start page instead, and the native functionality is on that page, in the menus and in the ... menu on every tab:
 

@@ -7,7 +7,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 #endif
 
 @main
-struct MadobeApp: App {
+struct BlackcombApp: App {
     #if os(macOS)
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     #endif

@@ -155,7 +155,7 @@ final class FloatController: NSObject, ObservableObject, NSWindowDelegate {
     }
 
     private func statusImage() -> NSImage? {
-        NSImage(systemSymbolName: "macwindow.on.rectangle", accessibilityDescription: "Madobe Float")
+        NSImage(systemSymbolName: "macwindow.on.rectangle", accessibilityDescription: "Blackcomb Float")
     }
 
     // MARK: Window events
@@ -186,7 +186,7 @@ final class FloatController: NSObject, ObservableObject, NSWindowDelegate {
     private func makeStatusItem() {
         let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         item.button?.image = statusImage()
-        item.button?.toolTip = "Madobe Float"
+        item.button?.toolTip = "Blackcomb Float"
         let menu = NSMenu()
         menu.delegate = self
         item.menu = menu
@@ -257,7 +257,7 @@ struct FloatView: View {
                     Text("\(Int((model.opacity * 100).rounded()))%").monospacedDigit().frame(width: 40, alignment: .trailing)
                     Toggle(isOn: $model.clickThrough) { Text("Click-through") }
                         .toggleStyle(.checkbox)
-                        .help("Clicks pass through the window. Turn it off from the Madobe icon in the menu bar.")
+                        .help("Clicks pass through the window. Turn it off from the Blackcomb icon in the menu bar.")
                     Button { controller.close() } label: { Image(systemName: "xmark.circle.fill") }
                         .accessibilityLabel("Close Float window")
                 }

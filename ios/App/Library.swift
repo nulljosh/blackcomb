@@ -35,7 +35,7 @@ final class Library: ObservableObject {
 
     nonisolated static var defaultDirectory: URL {
         FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent("Madobe" + (Profile.name.map { "-" + $0 } ?? ""), isDirectory: true)
+            .appendingPathComponent("Blackcomb" + (Profile.name.map { "-" + $0 } ?? ""), isDirectory: true)
     }
 
     init(directory: URL = Library.defaultDirectory) {

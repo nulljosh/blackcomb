@@ -24,11 +24,11 @@
         {
           "glass": false,
           "image-name": "glyph.png",
-          "name": "Madobe"
+          "name": "Blackcomb"
         }
       ],
       "lighting": "individual",
-      "name": "Madobe",
+      "name": "Blackcomb",
       "shadow": {
         "kind": "neutral",
         "opacity": 0.3

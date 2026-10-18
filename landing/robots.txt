@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://madobe.jaybulb.com/sitemap.xml
+Sitemap: https://blackcomb.jaybulb.com/sitemap.xml

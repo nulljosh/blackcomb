@@ -1,6 +1,6 @@
 // Landing demo proxy: GET /go?u=<url> fetches a page and drops the headers that stop it being framed.
 // ponytail: HTML only, GET only, iframe requests only, sandboxed frame, no cookies either way; no rewriting beyond <base> and link capture. Add rate limiting if abused.
-const CAPTURE = `<script>addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('a[href]');if(!a||e.defaultPrevented)return;e.preventDefault();parent.postMessage({madobe:a.href},'*')},true);addEventListener('submit',e=>{const f=e.target;if((f.method||'get').toLowerCase()!=='get')return;e.preventDefault();const u=new URL(f.action||location.href);new FormData(f).forEach((v,k)=>u.searchParams.set(k,v));parent.postMessage({madobe:u.href},'*')},true)</script>`;
+const CAPTURE = `<script>addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('a[href]');if(!a||e.defaultPrevented)return;e.preventDefault();parent.postMessage({blackcomb:a.href},'*')},true);addEventListener('submit',e=>{const f=e.target;if((f.method||'get').toLowerCase()!=='get')return;e.preventDefault();const u=new URL(f.action||location.href);new FormData(f).forEach((v,k)=>u.searchParams.set(k,v));parent.postMessage({blackcomb:u.href},'*')},true)</script>`;
 
 const PRIVATE = /^(localhost|.*\.local|.*\.internal|\[.*\]|\d+\.\d+\.\d+\.\d+)$/i;
 

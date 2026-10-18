@@ -1,4 +1,4 @@
-Subreddits drafted for Madobe:
+Subreddits drafted for Blackcomb:
 
 | Subreddit | Fits because | Gate | File |
 |---|---|---|---|

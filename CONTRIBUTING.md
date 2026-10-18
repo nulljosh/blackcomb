@@ -1,10 +1,10 @@
-# Contributing to madobe
+# Contributing to blackcomb
 
 ## Setup
 
 ```
-git clone https://github.com/nulljosh/madobe.git
-cd madobe
+git clone https://github.com/nulljosh/blackcomb.git
+cd blackcomb
 npm install
 ```
 

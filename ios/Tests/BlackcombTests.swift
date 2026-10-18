@@ -1,6 +1,6 @@
 import XCTest
 import WebKit
-@testable import Madobe
+@testable import Blackcomb
 
 @MainActor
 private func makeServices() -> Services {

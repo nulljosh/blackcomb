@@ -82,7 +82,7 @@ final class ContentBlocker {
 
     private func compile() async {
         let store = WKContentRuleListStore.default()
-        list = try? await store?.compileContentRuleList(forIdentifier: "madobe-trackers",
+        list = try? await store?.compileContentRuleList(forIdentifier: "blackcomb-trackers",
                                                          encodedContentRuleList: ContentBlocker.rulesJSON)
         for web in views.allObjects { apply(to: web) }
     }
@@ -105,7 +105,7 @@ final class Services: ObservableObject {
     let settings: Settings
     let blocker: ContentBlocker
     let sites: SiteRules
-    let siteBlocker = RuleListHost(identifier: "madobe-sites")
+    let siteBlocker = RuleListHost(identifier: "blackcomb-sites")
     let defaults: UserDefaults
     let dataStore: WKWebsiteDataStore
     @Published var sheet: Sheet?
@@ -146,10 +146,10 @@ struct IncomingLink: Equatable, Identifiable {
     var destination: Destination
 }
 
-/// A named throwaway profile (MADOBE_PROFILE=name) keeps tests and QA runs away from real data.
+/// A named throwaway profile (BLACKCOMB_PROFILE=name) keeps tests and QA runs away from real data.
 enum Profile {
     static var name: String? {
-        let n = ProcessInfo.processInfo.environment["MADOBE_PROFILE"]
+        let n = ProcessInfo.processInfo.environment["BLACKCOMB_PROFILE"]
         return n?.isEmpty == false ? n : nil
     }
 
