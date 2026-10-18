@@ -15,6 +15,8 @@ QA the browser to A+ as a designer and engineer, get the Mac build back through 
 
 ## Next, in order
 
+0. Start page tiles (favorites grid, reading cards, recent, welcome list only when empty) and the blue two-layer icon are committed but NOT in build 202610181700. Ship them in the next build; do not disturb the Mac review.
+
 1. When build 202610181700 is VALID: Joshua's yes on the reply and resubmit. Then rename the listing to Blackcomb, attach the build, send the reply (`asc web review reply`) and submit.
 2. Full rename of repo surfaces to Blackcomb (folder, GitHub repo, remote, Worker and domain, docs, fleet CLAUDE.md, memory). Bundle id stays com.nulljosh.lucarne.
 3. iOS: the build in review still says Blackcomb. Once it resolves, ship the Blackcomb build to iOS too.

@@ -123,6 +123,22 @@ final class LibraryTests: XCTestCase {
     }
 }
 
+final class StartPageTests: XCTestCase {
+    func testSiteNameDropsWwwAndCase() {
+        XCTAssertEqual(siteName("https://www.Apple.com/mac"), "apple.com")
+        XCTAssertEqual(siteName("not a url"), "not a url")
+    }
+
+    func testSnippetSkipsTheTitleLineAndIsShort() {
+        let body = String(repeating: "word ", count: 100)
+        let page = SavedPage(title: "T", url: "https://a.example/x", text: "T\n\n\(body)")
+        XCTAssertEqual(page.host, "a.example")
+        XCTAssertFalse(page.snippet.hasPrefix("T "))
+        XCTAssertLessThanOrEqual(page.snippet.count, 160)
+        XCTAssertEqual(SavedPage(title: "T", url: "u", text: "").snippet, "")
+    }
+}
+
 @MainActor
 final class ReaderTests: XCTestCase {
     func testPageTextKeepsTheArticleAndDropsTheChrome() async throws {
