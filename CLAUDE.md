@@ -34,3 +34,7 @@ xcodebuild build -project Madobe.xcodeproj -scheme Madobe -destination 'generic/
 - Why this is no longer "one file, nothing saved": Apple rejected 1.0.0 under 4.3(a) (spam: looks like other apps) and macOS under 4.2 (minimum functionality: not different from a web view). The fix is real native features, not metadata. Keep `landing/privacy.html` true whenever storage changes.
 - Keep `landing/support.html` a real support page: App Review rejected the old support URL (1.5) for not offering a way to ask for help.
 - ASC record 6809355192 (created 2026-09-07, iOS platform added; macOS platform added later, both 1.0.0). Bundle com.nulljosh.lucarne. Installed name must match the App Store name: `CFBundleName` and `CFBundleDisplayName` are both Madobe (2.3.8 rejected a build that still said Lucarne).
+
+## The loop
+
+Current resume state: `docs/LOOP-HANDOFF.md`.
