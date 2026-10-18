@@ -7,7 +7,7 @@ QA the browser to A+ as a designer and engineer, get the Mac build back through 
 ## Where things stand
 
 - Apple rejected the Mac submission of 2026-10-06 on 2026-10-11: 4.2 (read as a DuckDuckGo wrapper, sharing does not count) and 4.3 with the nine questions. iOS 1.0.0 is still waiting for review with the old build.
-- Name: Blackcomb (Joshua wanted a Vancouver mountain, Grouse was taken; 'you decide' 2026-10-18). Build 202610181700 carries it. The code: native start page, reading list with offline reader and read aloud, Google as the default search engine. Builds 202610181545 (Schooner) and 202610181630 (Windrose) are rejected names: never attach either.
+- Name: Blackcomb (Joshua wanted a Vancouver mountain, Grouse was taken; 'you decide' 2026-10-18). Build 202610181830 (iOS and Mac, uploaded, not attached) carries the tile start page and blue icon. 202610181700 carries the name. The code: native start page, reading list with offline reader and read aloud, Google as the default search engine. Builds 202610181545 (Schooner) and 202610181630 (Windrose) are rejected names: never attach either.
 - The ASC listing still says Blackcomb because the iOS build in review installs as Blackcomb. Rename the listing only in the same step as attaching a build that carries the final name.
 - Review notes for the Mac version describe the new build. The ASC privacy URL points at blackcomb.jaybulb.com/privacy.html. Landing and privacy page redeployed with the new copy.
 - Draft reply to Apple with the nine answers: `docs/REVIEW-REPLY.md`. Not sent.
