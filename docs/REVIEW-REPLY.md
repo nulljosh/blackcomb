@@ -1,6 +1,6 @@
-# Reply to App Review, macOS 1.0.0 (draft, not sent)
+# Reply to App Review, macOS 1.0.0 (SENT 2026-10-18 16:15 PT, shorter version; this file is the long draft)
 
-Thread cfe87cee on ASC app 6809355192. Apple rejected the 2026-10-06 Mac submission on 2026-10-11 under 4.2 (minimum functionality, "primarily an integration of DuckDuckGo") and 4.3 (spam) with the nine questions. Needs Joshua's yes before it goes out. Send with:
+Thread cfe87cee on ASC app 6809355192. Apple rejected the 2026-10-06 Mac submission on 2026-10-11 under 4.2 (minimum functionality, "primarily an integration of DuckDuckGo") and 4.3 (spam) with the nine questions. Already sent, do not send again. The command used was:
 
 ```
 asc web review reply --app 6809355192 --thread cfe87cee-2545-32ca-a87a-76c4318a0cac --message-file docs/REVIEW-REPLY.md
