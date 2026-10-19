@@ -17,29 +17,93 @@
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <style>
 @import url("https://jaybulb.com/tokens.css");
-:root{--ink:#1d1d1f;--paper:#f5f5f7;--bar:#fff;--field:#f5f5f7;--dim:#6e6e73;--border:#d2d2d7;--accent:#0a5fd6;}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bar:#1c1c1e;--field:#2c2c2e;--dim:#98989d;--border:#38383a;--accent:#2997ff;}}
-:root[data-theme="dark"]{--bar:#1c1c1e;--field:#2c2c2e;--dim:#98989d;--border:#38383a;--accent:#2997ff;}
+:root{--ink:#1d1d1f;--paper:#f5f5f7;--bar:#fff;--field:#f5f5f7;--dim:#6e6e73;--border:#d2d2d7;--accent:#0a5fd6;
+--sky1:#8ec9ff;--sky2:#eaf3fb;--far:#a9c0da;--mid:#6485ae;--snow:#f4f8fc;--near:#1e3148;--glow:rgba(255,236,200,.85)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bar:#1c1c1e;--field:#2c2c2e;--dim:#98989d;--border:#38383a;--accent:#2997ff;--ink:#f5f5f7;--paper:#000;
+--sky1:#070d1f;--sky2:#26406e;--far:#2b3f66;--mid:#1c2b4a;--snow:#9fb4d6;--near:#070b14;--glow:rgba(120,160,255,.35)}}
+:root[data-theme="dark"]{--bar:#1c1c1e;--field:#2c2c2e;--dim:#98989d;--border:#38383a;--accent:#2997ff;--ink:#f5f5f7;--paper:#000;
+--sky1:#070d1f;--sky2:#26406e;--far:#2b3f66;--mid:#1c2b4a;--snow:#9fb4d6;--near:#070b14;--glow:rgba(120,160,255,.35)}
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{height:100%}
-body{background:var(--bg);color:var(--text);font-family:var(--font-body);-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--font-body,-apple-system,BlinkMacSystemFont,"SF Pro Text",Helvetica,sans-serif);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+/* hero */
+.hero{position:relative;height:100vh;min-height:560px;overflow:hidden;background:linear-gradient(var(--sky1),var(--sky2) 70%);isolation:isolate}
+.hero svg,.hero canvas{position:absolute;inset:0;width:100%;height:100%}
+.layer{will-change:transform;transform:translate3d(var(--x,0),var(--y,0),0)}
+.sun{position:absolute;left:62%;top:30%;width:46vmin;height:46vmin;margin:-23vmin;border-radius:50%;background:radial-gradient(var(--glow),transparent 68%);will-change:transform;transform:translate3d(var(--x,0),var(--y,0),0)}
+.far{fill:var(--far)}.mid{fill:var(--mid)}.cap{fill:var(--snow)}.near{fill:var(--near)}
+.copy{position:absolute;left:0;right:0;top:17vh;text-align:center;padding:0 16px;z-index:2;transform:translate3d(0,var(--y,0),0);opacity:var(--o,1);will-change:transform,opacity}
+.copy img{width:84px;height:84px;border-radius:22%;box-shadow:0 12px 40px rgba(10,95,214,.35)}
+h1{font-size:clamp(2.6rem,8vw,5.5rem);font-weight:700;letter-spacing:-.035em;line-height:1.02;margin-top:20px}
+.copy p{font-size:clamp(1.05rem,2.4vw,1.4rem);color:var(--dim);margin-top:14px}
+.cta{display:flex;gap:12px;justify-content:center;margin-top:28px;flex-wrap:wrap}
+.btn{display:inline-block;padding:12px 24px;border-radius:999px;font-weight:600;text-decoration:none;background:var(--accent);color:#fff}
+.btn.ghost{background:color-mix(in srgb,var(--bar) 70%,transparent);color:var(--ink);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.hint{position:absolute;bottom:22px;left:0;right:0;text-align:center;font-size:.85rem;color:#fff;opacity:.8;z-index:2;animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(6px)}}
+/* demo window */
+.demo{max-width:1100px;margin:-90px auto 0;padding:0 16px;position:relative;z-index:3}
+.win{height:min(78vh,720px);display:flex;flex-direction:column;border-radius:16px;overflow:hidden;border:1px solid var(--border);background:var(--bar);box-shadow:0 40px 100px rgba(0,0,0,.28);transform:perspective(1400px) rotateX(var(--tilt,0deg));transform-origin:50% 0}
 .bar{display:flex;align-items:center;gap:6px;padding:8px 10px;background:var(--bar);border-bottom:1px solid var(--border);flex:none}
-.bar .brand{display:flex;align-items:center;gap:8px;font-weight:600;margin-right:6px;color:var(--text);text-decoration:none}
-.bar .brand img{width:24px;height:24px;border-radius:22%}
+.dots{display:flex;gap:6px;margin:0 8px 0 2px}.dots i{width:11px;height:11px;border-radius:50%;background:#ff5f57}.dots i:nth-child(2){background:#febc2e}.dots i:nth-child(3){background:#28c840}
 .bar button{background:none;border:0;color:var(--dim);font:inherit;font-size:1.05rem;cursor:pointer;padding:4px 7px;border-radius:6px;line-height:1}
-.bar button:hover{background:var(--field);color:var(--text)}
+.bar button:hover{background:var(--field);color:var(--ink)}
 .bar button:disabled{opacity:.35;cursor:default;background:none}
-.bar input{flex:1;min-width:0;background:var(--field);border:0;border-radius:999px;padding:8px 16px;color:var(--text);font:inherit;font-size:.95rem;outline:none}
+.bar input{flex:1;min-width:0;background:var(--field);border:0;border-radius:999px;padding:8px 16px;color:var(--ink);font:inherit;font-size:.95rem;outline:none}
 .bar input:focus{box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 30%,transparent)}
 .bar .src{color:var(--dim);font-size:.9rem;text-decoration:none;padding:4px 8px;border-radius:6px}
-.bar .src:hover{background:var(--field);color:var(--text)}
+.bar .src:hover{background:var(--field);color:var(--ink)}
 iframe{flex:1;width:100%;border:0;background:#fff}
-@media (max-width:560px){.bar .brand span,.bar .src{display:none}}
+/* features */
+.feat{max-width:1100px;margin:110px auto 0;padding:0 16px}
+.feat h2{font-size:clamp(1.8rem,5vw,3rem);letter-spacing:-.03em;text-align:center}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin-top:40px}
+.card{background:var(--bar);border:1px solid var(--border);border-radius:20px;padding:26px}
+.card h3{font-size:1.15rem}.card p{color:var(--dim);margin-top:8px;line-height:1.5}
+footer{margin-top:110px;position:relative;overflow:hidden;text-align:center;border-top:1px solid var(--border);font-size:.82rem;color:var(--dim);background:linear-gradient(var(--paper),color-mix(in srgb,var(--mid) 22%,var(--paper)) 60%,color-mix(in srgb,var(--near) 55%,var(--paper)));padding:64px 0 0}
+footer>*{position:relative;z-index:1}
+.foot-story{display:grid;grid-template-columns:120px 1fr;gap:48px;align-items:start;max-width:1100px;margin:0 auto;padding:0 16px 56px;text-align:left}
+.foot-story img{width:120px;height:120px;border-radius:22%;box-shadow:0 16px 48px rgba(10,95,214,.3)}
+.foot-story h2{font-size:1.75rem;line-height:1.15;font-weight:600;letter-spacing:-.02em;color:var(--ink);margin-bottom:12px}
+.foot-story p{max-width:60ch;font-size:1.05rem;line-height:1.5}
+.foot-rule{display:flex;align-items:center;gap:20px;max-width:1100px;margin:0 auto;padding:14px 16px 40px;letter-spacing:.06em;font-weight:500}
+.foot-rule::before{content:"";order:1;flex:1;height:1px;background:var(--border)}.foot-rule>:first-child{order:0}.foot-rule>:last-child{order:2}
+.foot-dir{display:grid;grid-template-columns:repeat(4,1fr);gap:40px 32px;max-width:1100px;margin:0 auto;padding:0 16px 56px;text-align:left}
+.foot-col h3{font-size:.82rem;font-weight:600;color:var(--ink);letter-spacing:.02em;margin-bottom:8px}
+.foot-col ul{list-style:none}.foot-col li{margin:2px 0}
+.foot-col a{display:inline-block;padding:5px 0;color:var(--dim);text-decoration:none}
+.foot-col a:hover{color:var(--ink);text-decoration:underline}
+.foot-bar{padding:0 16px 150px;max-width:1100px;margin:0 auto}
+.foot-scene{position:absolute;left:0;right:0;bottom:0;width:100%;height:170px;z-index:0;display:block}
+.foot-scene .f1{fill:var(--far);opacity:.55}.foot-scene .f2{fill:var(--mid);opacity:.8}.foot-scene .f3{fill:var(--near)}
+@media (max-width:760px){.foot-story{grid-template-columns:1fr;gap:24px}.foot-story img{width:80px;height:80px}.foot-dir{grid-template-columns:repeat(2,1fr)}.foot-rule{flex-wrap:wrap;justify-content:center;gap:10px 16px}.foot-rule::before{order:-1;flex-basis:100%}}
+.rv{opacity:0;transform:translateY(28px);transition:opacity .7s,transform .7s}.rv.in{opacity:1;transform:none}
+@media (max-width:560px){.bar .src,.dots{display:none}.demo{margin-top:-60px}}
+@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}.hint{animation:none}.layer,.sun,.copy,.win{transform:none!important}}
 </style>
 </head>
-<body>
+<body id="top">
+<header class="hero" id="hero">
+  <div class="sun" data-s="0.05"></div>
+  <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+    <g class="layer" data-s="0.12" data-m="6"><g transform="translate(0 290)"><path class="far" d="M-60 520 L140 440 L230 480 L380 360 L470 420 L620 330 L760 450 L900 390 L1050 470 L1200 380 L1340 450 L1460 400 L1660 470 L1660 1000 L-60 1000Z"/></g></g>
+    <g class="layer" data-s="0.22" data-m="14"><g transform="translate(0 240)"><path class="mid" d="M-60 650 L180 590 L320 620 L520 420 L620 300 L700 380 L760 350 L900 400 L980 470 L1120 520 L1300 480 L1450 560 L1660 540 L1660 1000 L-60 1000Z"/><path class="cap" d="M620 300 L560 372 L600 360 L640 392 L668 350 L700 380Z"/></g></g>
+    <g class="layer" data-s="0.34" data-m="26"><g transform="translate(0 130)"><path class="near" id="trees"/></g></g>
+  </svg>
+  <canvas id="snow"></canvas>
+  <div class="copy" id="copy">
+    <img src="icon.svg" alt="">
+    <h1>A browser, up high.</h1>
+    <p>Blackcomb. WebKit for Mac, iPhone and iPad. Nothing in the way.</p>
+    <div class="cta"><a class="btn" href="#try">Try it right here</a><a class="btn ghost" href="https://github.com/nulljosh/blackcomb">Source</a></div>
+  </div>
+  <div class="hint">scroll</div>
+</header>
+<main>
+<section class="demo" id="try"><div class="win" id="win">
 <form class="bar" id="bar" role="navigation" aria-label="Browser bar">
-  <a class="brand" href="/" aria-label="Blackcomb home"><img src="icon.svg" alt=""><span>Blackcomb</span></a>
+  <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
   <button type="button" id="back" aria-label="Back">‹</button>
   <button type="button" id="fwd" aria-label="Forward">›</button>
   <input id="addr" value="blackcomb.jaybulb.com" aria-label="Search or enter address" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Search or enter address">
@@ -47,7 +111,75 @@ iframe{flex:1;width:100%;border:0;background:#fff}
   <a class="src" href="https://github.com/nulljosh/blackcomb">Source</a>
 </form>
 <iframe id="page" src="start.html" title="Blackcomb" sandbox="allow-scripts allow-forms allow-popups allow-top-navigation-by-user-activation"></iframe>
+</div></section>
+<section class="feat" id="features">
+  <h2 class="rv">Light on the way up.</h2>
+  <div class="grid">
+    <div class="card rv"><h3>A start page that earns it</h3><p>Reading cards, favorites and recent sites as tiles. Not a search box wearing a costume.</p></div>
+    <div class="card rv"><h3>Reading list, read aloud</h3><p>Save a page, read it offline, or have it read to you.</p></div>
+    <div class="card rv"><h3>Private tabs</h3><p>Isolated storage. Close the tab and it is gone.</p></div>
+    <div class="card rv"><h3>Tracker blocking</h3><p>On by default. No setting to find.</p></div>
+    <div class="card rv"><h3>Find in page</h3><p>Command-F, the way your hands expect.</p></div>
+    <div class="card rv"><h3>Bookmarks and history</h3><p>Saved pages come back on launch. History stays on your device.</p></div>
+  </div>
+</section>
+</main>
+<footer>
+  <section class="foot-story" aria-label="About Blackcomb">
+    <img src="icon.svg" alt="" loading="lazy">
+    <div><h2>Up high.<br>Light on its feet.</h2>
+    <p>A web browser that is a text field and a WebKit view, plus the few things worth adding: a real start page, a reading list, private tabs and tracker blocking. Free and open source, on Mac, iPhone and iPad.</p></div>
+  </section>
+  <div class="foot-rule" aria-hidden="true"><span>Blackcomb</span><span>A browser, up high.</span></div>
+  <nav class="foot-dir" aria-label="Footer">
+    <div class="foot-col"><h3>Blackcomb</h3><ul>
+      <li><a href="#try">Try it live</a></li>
+      <li><a href="search.html">Blackcomb Search</a></li>
+      <li><a href="start.html">Start page</a></li>
+      <li><a href="https://github.com/nulljosh/blackcomb/releases">Releases</a></li></ul></div>
+    <div class="foot-col"><h3>Explore</h3><ul>
+      <li><a href="#try">Demo</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#top">Back to top</a></li></ul></div>
+    <div class="foot-col"><h3>Developers</h3><ul>
+      <li><a href="https://github.com/nulljosh/blackcomb">Source</a></li>
+      <li><a href="https://github.com/nulljosh/blackcomb/issues">Report a bug</a></li></ul></div>
+    <div class="foot-col"><h3>Project</h3><ul>
+      <li><a href="support.html">Support</a></li>
+      <li><a href="privacy.html">Privacy</a></li>
+      <li><a href="https://github.com/nulljosh/blackcomb/blob/main/LICENSE">License</a></li>
+      <li><a href="https://jaybulb.com">Portfolio</a></li></ul></div>
+  </nav>
+  <div class="foot-bar"><p>Blackcomb &middot; &copy; 2026 Joshua Trommel &middot; Made in Vancouver, BC</p></div>
+  <svg class="foot-scene" viewBox="0 0 1600 170" preserveAspectRatio="none" aria-hidden="true">
+    <path class="f1" d="M0 120 L150 60 L300 100 L470 30 L640 95 L820 45 L1000 105 L1180 40 L1360 90 L1500 55 L1600 90 V170 H0Z"/>
+    <path class="f2" d="M0 140 L200 90 L380 125 L560 70 L760 130 L960 85 L1140 135 L1340 80 L1600 130 V170 H0Z"/>
+    <path class="f3" d="M0 165 L120 135 L260 158 L420 125 L600 160 L800 130 L1000 162 L1200 128 L1400 158 L1600 135 V170 H0Z"/>
+  </svg>
+</footer>
 <script>
+// Hero: jagged tree line, snow, scroll + pointer parallax. All skipped under reduced motion.
+const rm=matchMedia('(prefers-reduced-motion: reduce)').matches;
+(function(){let d='M-60 1000 L-60 760',x=-60,r=7;const n=()=>(r=r*16807%2147483647)/2147483647;
+while(x<1660){const w=18+n()*26,h=40+n()*90+(Math.sin(x/170)+1)*40;d+=` L${x+w/2} ${760-h} L${x+w} 760`;x+=w}
+document.getElementById('trees').setAttribute('d',d+' L1660 1000Z')})();
+const L=[...document.querySelectorAll('.layer,.sun')],copy=document.getElementById('copy'),win=document.getElementById('win'),hero=document.getElementById('hero');
+let mx=0,tick=0;
+function frame(){tick=0;const y=scrollY,h=hero.offsetHeight;if(y>h*1.2)return;
+for(const e of L){e.style.setProperty('--y',(y*e.dataset.s)+'px');e.style.setProperty('--x',(mx*(e.dataset.m||0))+'px')}
+copy.style.setProperty('--y',(y*.45)+'px');copy.style.setProperty('--o',Math.max(0,1-y/(h*.6)));
+win.style.setProperty('--tilt',Math.max(0,6-6*Math.min(1,Math.max(0,(y-h*.3)/(h*.6))))+'deg')}
+if(!rm){const q=()=>tick||(tick=requestAnimationFrame(frame));addEventListener('scroll',q,{passive:true});hero.addEventListener('pointermove',e=>{mx=e.clientX/innerWidth-.5;q()});frame()}
+// snow
+const c=document.getElementById('snow'),g=c.getContext('2d');let W,H;const F=[];
+function size(){W=c.width=hero.clientWidth;H=c.height=hero.clientHeight}size();addEventListener('resize',size);
+if(!rm){for(let i=0;i<90;i++)F.push({x:Math.random(),y:Math.random(),r:1+Math.random()*2.2,v:.15+Math.random()*.5});
+(function loop(){g.clearRect(0,0,W,H);g.fillStyle='rgba(255,255,255,.85)';
+for(const f of F){f.y+=f.v/H*1.6;f.x+=Math.sin(f.y*9+f.r)*.0005;if(f.y>1){f.y=0;f.x=Math.random()}g.beginPath();g.arc(f.x*W,f.y*H,f.r,0,7);g.fill()}
+requestAnimationFrame(loop)})()}
+// reveal
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.15});
+document.querySelectorAll('.rv').forEach((e,i)=>{e.style.transitionDelay=(i%3)*90+'ms';io.observe(e)});
 // Mirrors resolve() in BlackcombApp.swift; Wikipedia stands in for the search engine because DuckDuckGo refuses framing.
 function resolve(s){s=s.trim();if(!s)return null;if(s.includes('://'))return s;if(!s.includes(' ')&&s.includes('.'))return 'https://'+s;return 'https://en.wikipedia.org/wiki/Special:Search?search='+encodeURIComponent(s)}
 const f=document.getElementById('bar'),a=document.getElementById('addr'),p=document.getElementById('page');
