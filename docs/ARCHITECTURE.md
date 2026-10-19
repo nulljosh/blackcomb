@@ -1,23 +1,37 @@
 # Architecture
 
-WebKit browser. One SwiftUI file, iOS and macOS from the same code. Address bar, tabs, back/forward/reload. No bookmarks, no sync, no telemetry. Browse the web, not an opinion about browsing.
+WebKit browser for Mac, iPhone and iPad from one xcodegen target. WebKit does the browsing; Blackcomb adds a start page, a reading list, bookmarks, history, private tabs, tracker blocking, per-site rules, Float (Mac) and Pair (iOS). Nothing is sent anywhere.
+
+<img src="../architecture.svg" width="720" alt="Screens, browser core and on-device state sit on WebKit; the landing page lives outside the app">
 
 ## How it runs
 
-`BlackcombApp.swift` is the sole source file. `resolve()` turns input into a URL (type a host → loads it, type words → DuckDuckGo search). `Page` wraps a `WKWebView` and its navigation delegate. `Tabs` holds the page list. `PageView` renders the chrome (address bar, buttons, tab bar). On macOS and iOS, the same code drives both: only the window size differs.
+`BlackcombApp.swift` builds `Services` (shared state) and `Tabs`, then shows `BrowserView`. `Tabs` is the list of open pages and the current one; normal tabs are restored at launch, private tabs never are. `Page` owns one `WKWebView` and is its navigation and UI delegate: it mirrors address, title, loading, back, forward and secure into SwiftUI state, opens `target=_blank` links as tabs, hands `mailto:` and `tel:` to the system, and applies the site's rules on each page load. `resolve()` turns typed text into a URL (a scheme-less host gets https, anything else searches with the chosen engine; Google by default).
+
+## Files
 
 | File | What it owns |
 |---|---|
-| `ios/App/BlackcombApp.swift` | Everything: URL resolution, WKWebView wrapper, tabs, address bar, back/forward/reload, search bar. One file per Apple best-practice. |
-| `ios/Tests/BlackcombTests.swift` | Unit tests for URL resolution and tab operations. |
-| `ios/project.yml` | xcodegen project definition for iOS and macOS. |
-| `landing/index.html` | Landing page: address bar + embedded browser iframe for a live demo. Hero and tagline. |
-| `landing/start.html` | Start/home page (what loads when the browser opens with no URL). |
-| `landing/deploy.sh` | Deploy script for landing page (wrangler deploy). |
-| `wrangler.toml` | Cloudflare Worker deployment for the landing page. |
+| `ios/App/BlackcombApp.swift` | App entry and menu commands. |
+| `ios/App/Browser.swift` | `SearchEngine`, `resolve()`, `Page`, `Tabs`, the platform `WebView` wrapper. |
+| `ios/App/Views.swift` | Chrome, tab strip, find bar, Bookmarks, History, Settings. |
+| `ios/App/Start.swift` | The start page a new tab shows (search, reading cards, favorites, recent). |
+| `ios/App/Reader.swift` | Page text extraction, reading list view, offline reader, read aloud. |
+| `ios/App/Library.swift` | Bookmarks, history (500, newest first) and saved pages as JSON in Application Support. |
+| `ios/App/Services.swift` | `Settings`, `ContentBlocker` (WebKit content rule list), shared `Services`, `Profile` (`BLACKCOMB_PROFILE` for QA). |
+| `ios/App/SiteRules.swift` | Per-site zoom, dark appearance, block images, scripts and pop-ups. |
+| `ios/App/Float.swift` | Mac only: the always-on-top, see-through, click-through window and menu bar item. |
+| `ios/App/Pair.swift` | iPhone and iPad: two pages in one window. |
+| `ios/App/Intents.swift` | Shortcuts actions: Open in Blackcomb, Open in Float Window. |
+| `ios/Tests/BlackcombTests.swift` | 48 tests: resolve, tabs, library, settings, site rules, and a real WebKit compile of the blocker rules. |
+| `ios/project.yml` | xcodegen definition for iOS and macOS. |
+| `worker/index.js` | Landing Worker: `/go` frame proxy for the demo and `/api/search`. |
+| `landing/` | The site: the page is a browser (bar plus iframe), `start.html`, `search.html`, privacy and support. |
+| `wrangler.toml` | Worker deploy. The Worker keeps its first name, `madobe`. |
 
 ## Design
 
-- WebKit does all browsing; no custom rendering, history, or cookie layers. Use the OS when it has it.
-- Tabs are in-memory only. No persistence (yet).
-- App delegates to OS services for everything (WebKit for browsing, DuckDuckGo for search, URL schemes for mailto: and tel:).
+- WebKit does the rendering, JavaScript, cookies and networking. Use the OS when it has it.
+- History, bookmarks and saved text stay on the device in plain JSON files. Private tabs use a non-persistent data store and record nothing.
+- One `#if` per concern: the `WebView` wrapper, Float (Mac), Pair (iOS).
+- Keep `landing/privacy.html` true whenever storage changes.
