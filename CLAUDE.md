@@ -14,9 +14,10 @@ v1.0.0, WebKit browser. Named after the mountain above Whistler (Blackcomb, 2026
 - `ios/App/Reader.swift`: the reading list. `Page.textScript`/`pageText()` pull the article text, `Library.savePage` keeps it in `saved.json`, `ReaderView` reads it offline with a text size and read-aloud (`Speaker`, AVSpeechSynthesizer).
 - `ios/App/Pair.swift`: `PairModel` (split, swap, layout rule) shared; `PairView` is iOS only.
 - `ios/App/Float.swift`: `FloatPrefs` (opacity, click-through, saved frame) shared; `FloatController` and `FloatView` (floating NSPanel plus menu bar item) are macOS only.
+- `ios/App/Automation.swift`: macOS only. `HTTPRequest` parser, `AutomationAPI` (tool table, auth, REST at `/api`, MCP JSON-RPC at `/mcp`, one `respond()` so they cannot drift), `Automation` (NWListener on loopback port 47329, token in `automation-token` beside the library, the tools), `AutomationSection` (Settings). Off by default (`Settings.automation`); `BLACKCOMB_AUTOMATION=1` and `BLACKCOMB_AUTOMATION_PORT` force it on for QA. Needs the `network.server` entitlement. Refuses any request with an Origin header or a Host other than 127.0.0.1/localhost:port, and never lists or acts on private tabs. `Page.perform/load` wait for a load to finish. `Services.agentActive` lights the address bar.
 - `ios/App/Intents.swift`: App Intents (Open in Blackcomb; Open in Float Window on Mac). Links queue in `Services.incoming`.
 - `BLACKCOMB_PROFILE=name` env var gives a throwaway library, defaults and cookie store for QA runs.
-- `ios/Tests/BlackcombTests.swift`: resolve, tabs, library, settings, and a real WebKit compile of the blocker rules.
+- `ios/Tests/BlackcombTests.swift`: resolve, tabs, library, settings, a real WebKit compile of the blocker rules, and (macOS) the automation parser, auth and MCP/REST routing.
 - `worker/index.js`: `/go?u=` demo proxy for the landing (strips frame-blocking headers; GET, iframe-only, no cookies, frame sandboxed without allow-same-origin).
 - `landing/`: the page IS a browser (bar + iframe through /go, index.html); hero copy lives in start.html; `privacy.html` and `support.html` are the URLs App Store Connect uses. Deployed via `deploy.sh`.
 
@@ -30,6 +31,7 @@ xcodebuild build -project Blackcomb.xcodeproj -scheme Blackcomb -destination 'ge
 
 ## Rules
 
+- Automation is a Mac-only feature that changes the entitlements (`network.server`). Do not attach it to a build under review without Joshua's yes, and keep it off by default.
 - WebKit does the browsing and the OS keeps its own data. History and bookmarks are ours, stay on the device, and are never sent anywhere. Private tabs use a non-persistent data store and record nothing.
 - Why this is no longer "one file, nothing saved": Apple rejected 1.0.0 under 4.3(a) (spam: looks like other apps) and macOS under 4.2 (minimum functionality: not different from a web view). The fix is real native features, not metadata. Keep `landing/privacy.html` true whenever storage changes.
 - Keep `landing/support.html` a real support page: App Review rejected the old support URL (1.5) for not offering a way to ask for help.

@@ -16,6 +16,14 @@ Blackcomb is a WebKit browser with four things Safari does not do.
 
 **Site rules (both).** Per-site page zoom, dark appearance, block images, block scripts and block pop-ups, kept on the device and applied through WebKit.
 
+**Automation (Mac).** Turn it on in Settings and an AI agent can drive Blackcomb over MCP or a small REST API: open tabs, navigate, read the page, click, type, run JavaScript, take a screenshot. It listens on 127.0.0.1 only, needs a token, is off by default and never touches private tabs. The address bar glows while an agent is driving. Connect Claude Code with the command Settings copies for you:
+
+```
+claude mcp add --transport http blackcomb http://127.0.0.1:47329/mcp --header "Authorization: Bearer <token>"
+```
+
+REST is the same tools: `GET /api` lists them, `POST /api/<tool>` runs one.
+
 There are also tabs, private tabs, bookmarks, history, find in page, tracker blocking and a Shortcuts action, Open in Blackcomb (and Open in Float Window on the Mac). Nothing is sent anywhere.
 
 <img src="progress.svg" width="460">

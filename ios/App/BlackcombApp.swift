@@ -20,7 +20,11 @@ struct BlackcombApp: App {
     init() {
         let services = Services.shared
         _services = StateObject(wrappedValue: services)
-        _tabs = StateObject(wrappedValue: Tabs(services: services, restore: true, defaults: services.defaults))
+        let tabs = Tabs(services: services, restore: true, defaults: services.defaults)
+        _tabs = StateObject(wrappedValue: tabs)
+        #if os(macOS)
+        Automation.shared.configure(tabs: tabs, services: services)
+        #endif
     }
 
     var body: some Scene {

@@ -131,11 +131,13 @@ struct PageView: View {
                 #endif
         }
         .padding(.horizontal, 10).padding(.vertical, 6)
-        .background(.quaternary, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+        .background(services.agentActive && !page.isPrivate ? AnyShapeStyle(Color.accentColor.opacity(0.22)) : AnyShapeStyle(.quaternary),
+                    in: RoundedRectangle(cornerRadius: 8, style: .continuous))
     }
 
     private var addressIcon: String {
         if page.isPrivate { return "eyeglasses" }
+        if services.agentActive { return "sparkles" }
         if page.secure { return "lock.fill" }
         if page.address.hasPrefix("http://") { return "exclamationmark.triangle" }
         return "magnifyingglass"
@@ -378,6 +380,9 @@ struct SettingsView: View {
                 } footer: {
                     Text("Blocks third-party requests to well-known ad and tracking hosts. Private tabs also keep no history, cookies or cache.")
                 }
+                #if os(macOS)
+                AutomationSection(settings: settings)
+                #endif
                 Section("Data") {
                     Button("Clear History") { library.clearHistory() }.disabled(library.history.isEmpty)
                     Button(cleared ? "Website Data Cleared" : "Clear Cookies and Website Data") {

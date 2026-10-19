@@ -67,6 +67,8 @@ final class Page: NSObject, ObservableObject, Identifiable, WKNavigationDelegate
     var onNewTab: ((URL) -> Void)?
     /// Something worth saving changed (a page finished loading).
     var onChange: (() -> Void)?
+    /// Callers waiting for the current load to end (the automation server). Resumed by didFinish, didFail or a timeout.
+    private var waiters: [UUID: CheckedContinuation<Void, Never>] = [:]
 
     /// `start` nil opens the homepage, "" opens nothing.
     init(_ start: String? = nil, services: Services = .shared, isPrivate: Bool = false) {
@@ -92,6 +94,31 @@ final class Page: NSObject, ObservableObject, Identifiable, WKNavigationDelegate
         web.load(URLRequest(url: u))
     }
 
+    /// Runs `action` (a load, back, forward or reload) and returns once the page finishes or fails, or after `timeout`.
+    func perform(timeout: TimeInterval = 20, _ action: () -> Void) async {
+        let id = UUID()
+        await withCheckedContinuation { (c: CheckedContinuation<Void, Never>) in
+            waiters[id] = c
+            action()
+            Task { [weak self] in
+                try? await Task.sleep(for: .seconds(timeout))
+                self?.waiters.removeValue(forKey: id)?.resume()
+            }
+        }
+    }
+
+    /// Loads what the user would have typed and waits for it.
+    func load(_ input: String, timeout: TimeInterval = 20) async {
+        guard resolve(input, engine: services.settings.engine) != nil else { return }
+        await perform(timeout: timeout) { go(input) }
+    }
+
+    private func flushWaiters() {
+        let all = waiters
+        waiters = [:]
+        for c in all.values { c.resume() }
+    }
+
     private func sync() {
         address = web.url?.absoluteString ?? address
         title = web.title.flatMap { $0.isEmpty ? nil : $0 } ?? web.url?.host() ?? "New Tab"
@@ -108,10 +135,12 @@ final class Page: NSObject, ObservableObject, Identifiable, WKNavigationDelegate
             services.library.record(title: title, url: url.absoluteString)
         }
         onChange?()
+        flushWaiters()
     }
     func webView(_ w: WKWebView, didFail n: WKNavigation!, withError e: Error) {
         sync()
         if (e as NSError).code != NSURLErrorCancelled { errorMessage = e.localizedDescription }
+        flushWaiters()
     }
     func webView(_ w: WKWebView, didFailProvisionalNavigation n: WKNavigation!, withError e: Error) {
         webView(w, didFail: n, withError: e)
@@ -119,6 +148,7 @@ final class Page: NSObject, ObservableObject, Identifiable, WKNavigationDelegate
     func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
         loading = false
         errorMessage = "This page stopped responding. Reload to try again."
+        flushWaiters()
     }
 
     /// Web links stay in the tab; mailto:, tel: and other schemes go to the system.

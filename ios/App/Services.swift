@@ -5,6 +5,7 @@ import WebKit
 final class Settings: ObservableObject {
     private let defaults: UserDefaults
     var onBlockChange: ((Bool) -> Void)?
+    var onAutomationChange: ((Bool) -> Void)?
 
     @Published var engine: SearchEngine { didSet { defaults.set(engine.rawValue, forKey: "engine") } }
     @Published var homepage: String { didSet { defaults.set(homepage, forKey: "homepage") } }
@@ -15,8 +16,17 @@ final class Settings: ObservableObject {
         }
     }
 
+    /// Mac only: lets a local agent drive the browser over MCP and a REST API. Off until switched on.
+    @Published var automation: Bool {
+        didSet {
+            defaults.set(automation, forKey: "automation")
+            onAutomationChange?(automation)
+        }
+    }
+
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
+        automation = defaults.bool(forKey: "automation")
         engine = SearchEngine(rawValue: defaults.string(forKey: "engine") ?? "") ?? .google
         // Empty means the start page.
         homepage = defaults.string(forKey: "homepage") ?? ""
@@ -110,6 +120,8 @@ final class Services: ObservableObject {
     let dataStore: WKWebsiteDataStore
     @Published var sheet: Sheet?
     @Published var finding = false
+    /// True while a local agent is driving the browser (Automation.swift); the address bar shows it.
+    @Published var agentActive = false
     /// Bumped by the Open Location command; the page focuses its address bar when this changes.
     @Published var addressFocusTick = 0
 

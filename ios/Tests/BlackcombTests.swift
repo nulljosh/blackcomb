@@ -425,3 +425,69 @@ final class FloatPrefsTests: XCTestCase {
         XCTAssertEqual(FloatPrefs.load(defaults).opacity, 0.2, "a hand-edited value is clamped")
     }
 }
+
+
+#if os(macOS)
+@MainActor
+final class AutomationTests: XCTestCase {
+    private let port: UInt16 = 47329
+    private func request(_ path: String, method: String = "POST", body: String = "", headers: [String: String] = [:]) -> HTTPRequest {
+        var h = ["host": "127.0.0.1:47329", "authorization": "Bearer secret"]
+        h.merge(headers) { _, new in new }
+        return HTTPRequest(method: method, path: path, headers: h, body: Data(body.utf8))
+    }
+    private func respond(_ req: HTTPRequest) async -> HTTPResponse {
+        await AutomationAPI.respond(req, token: "secret", port: port) { name, _ in .text("ran \(name)") }
+    }
+    private func object(_ r: HTTPResponse) -> [String: Any] { (try? JSONSerialization.jsonObject(with: r.body)) as? [String: Any] ?? [:] }
+
+    func testParseWaitsForTheWholeBody() {
+        let head = "POST /mcp HTTP/1.1\r\nHost: x\r\nContent-Length: 5\r\n\r\n"
+        guard case .needMore = HTTPRequest.parse(Data("POST /mcp HTTP/1.1\r\nHost: x".utf8)) else { return XCTFail("headers unfinished") }
+        guard case .needMore = HTTPRequest.parse(Data((head + "he").utf8)) else { return XCTFail("body unfinished") }
+        guard case .done(let req) = HTTPRequest.parse(Data((head + "hello").utf8)) else { return XCTFail("complete") }
+        XCTAssertEqual(req.method, "POST"); XCTAssertEqual(req.path, "/mcp"); XCTAssertEqual(String(decoding: req.body, as: UTF8.self), "hello")
+        guard case .bad = HTTPRequest.parse(Data("POST / HTTP/1.1\r\nTransfer-Encoding: chunked\r\n\r\n".utf8)) else { return XCTFail("chunked") }
+    }
+
+    func testNeedsTheToken() async {
+        let none = await respond(request("/api/tabs_list", headers: ["authorization": ""]))
+        XCTAssertEqual(none.status, 401)
+        let wrong = await respond(request("/api/tabs_list", headers: ["authorization": "Bearer nope"]))
+        XCTAssertEqual(wrong.status, 401)
+    }
+
+    func testRefusesBrowsersAndOtherHosts() async {
+        let origin = await respond(request("/mcp", headers: ["origin": "https://evil.example"]))
+        XCTAssertEqual(origin.status, 403)
+        let rebind = await respond(request("/mcp", headers: ["host": "evil.example:47329"]))
+        XCTAssertEqual(rebind.status, 403)
+    }
+
+    func testMCPListsAndCallsTools() async {
+        let list = await respond(request("/mcp", body: #"{"jsonrpc":"2.0","id":1,"method":"tools/list"}"#))
+        let names = ((object(list)["result"] as? [String: Any])?["tools"] as? [[String: Any]])?.compactMap { $0["name"] as? String } ?? []
+        XCTAssertTrue(["navigate", "read_page", "click", "type", "screenshot"].allSatisfy(names.contains))
+        let call = await respond(request("/mcp", body: #"{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"navigate","arguments":{"url":"a.com"}}}"#))
+        let text = (((object(call)["result"] as? [String: Any])?["content"] as? [[String: Any]])?.first?["text"]) as? String
+        XCTAssertEqual(text, "ran navigate")
+        let hello = await respond(request("/mcp", body: #"{"jsonrpc":"2.0","id":3,"method":"initialize","params":{"protocolVersion":"2025-06-18"}}"#))
+        XCTAssertEqual((object(hello)["result"] as? [String: Any])?["protocolVersion"] as? String, "2025-06-18")
+        let note = await respond(request("/mcp", body: #"{"jsonrpc":"2.0","method":"notifications/initialized"}"#))
+        XCTAssertEqual(note.status, 202)
+        let get = await respond(request("/mcp", method: "GET"))
+        XCTAssertEqual(get.status, 405)
+    }
+
+    func testRESTRunsTheSameTools() async {
+        let ok = await respond(request("/api/tabs_list"))
+        XCTAssertEqual(ok.status, 200)
+        let nope = await respond(request("/api/nope"))
+        XCTAssertEqual(nope.status, 404)
+        let bad = await respond(request("/api/navigate", body: "[1]"))
+        XCTAssertEqual(bad.status, 400)
+        let index = await respond(request("/api", method: "GET"))
+        XCTAssertEqual((object(index)["tools"] as? [[String: Any]])?.count, AutomationAPI.tools.count)
+    }
+}
+#endif

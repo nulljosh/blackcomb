@@ -22,8 +22,9 @@ WebKit browser for Mac, iPhone and iPad from one xcodegen target. WebKit does th
 | `ios/App/SiteRules.swift` | Per-site zoom, dark appearance, block images, scripts and pop-ups. |
 | `ios/App/Float.swift` | Mac only: the always-on-top, see-through, click-through window and menu bar item. |
 | `ios/App/Pair.swift` | iPhone and iPad: two pages in one window. |
+| `ios/App/Automation.swift` | Mac only: local MCP and REST server (127.0.0.1, token, off by default) that lets an agent drive tabs. |
 | `ios/App/Intents.swift` | Shortcuts actions: Open in Blackcomb, Open in Float Window. |
-| `ios/Tests/BlackcombTests.swift` | 48 tests: resolve, tabs, library, settings, site rules, and a real WebKit compile of the blocker rules. |
+| `ios/Tests/BlackcombTests.swift` | 53 tests (macOS): resolve, tabs, library, settings, site rules, and a real WebKit compile of the blocker rules. |
 | `ios/project.yml` | xcodegen definition for iOS and macOS. |
 | `worker/index.js` | Landing Worker: `/go` frame proxy for the demo and `/api/search`. |
 | `landing/` | The site: the page is a browser (bar plus iframe), `start.html`, `search.html`, privacy and support. |
@@ -34,4 +35,5 @@ WebKit browser for Mac, iPhone and iPad from one xcodegen target. WebKit does th
 - WebKit does the rendering, JavaScript, cookies and networking. Use the OS when it has it.
 - History, bookmarks and saved text stay on the device in plain JSON files. Private tabs use a non-persistent data store and record nothing.
 - One `#if` per concern: the `WebView` wrapper, Float (Mac), Pair (iOS).
+- Automation is the one network listener: loopback only, token required, no browser requests (Origin) or foreign hosts, private tabs hidden.
 - Keep `landing/privacy.html` true whenever storage changes.

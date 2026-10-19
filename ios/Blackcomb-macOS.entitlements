@@ -10,5 +10,8 @@
 	<true/>
 	<key>com.apple.security.network.client</key>
 	<true/>
+	<!-- The local automation server (Automation.swift) listens on 127.0.0.1 only, and only when switched on in Settings. -->
+	<key>com.apple.security.network.server</key>
+	<true/>
 </dict>
 </plist>

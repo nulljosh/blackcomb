@@ -25,7 +25,7 @@ One pure function, `resolve`, turns typed text into a URL. Text with a scheme lo
 
 ## What Blackcomb Adds
 
-Each addition is native and stays on the device. A start page replaces the empty tab. The reading list keeps a page's text for offline reading and read aloud. Bookmarks and history are two JSON files. Site rules set zoom, dark appearance and block images, scripts or pop-ups per host through WebKit. Tracker blocking is one WebKit content rule list. Float (Mac) keeps a tab in a see-through, click-through window above every app. Pair (iPhone and iPad) shows two pages at once. Shortcuts gets an Open in Blackcomb action.
+Each addition is native and stays on the device. A start page replaces the empty tab. The reading list keeps a page's text for offline reading and read aloud. Bookmarks and history are two JSON files. Site rules set zoom, dark appearance and block images, scripts or pop-ups per host through WebKit. Tracker blocking is one WebKit content rule list. Float (Mac) keeps a tab in a see-through, click-through window above every app. Pair (iPhone and iPad) shows two pages at once. Shortcuts gets an Open in Blackcomb action. On the Mac, an optional local server (off by default, loopback only, token required) lets an agent drive the browser over MCP or REST, and never sees private tabs.
 
 ## Platform Split
 
