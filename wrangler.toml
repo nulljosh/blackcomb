@@ -16,6 +16,3 @@ custom_domain = true
 pattern = "madobe.jaybulb.com"
 custom_domain = true
 
-[[routes]]
-pattern = "madobe.heyitsmejosh.com"
-custom_domain = true
