@@ -82,6 +82,7 @@ footer>*{position:relative;z-index:1}
 @media (max-width:560px){.bar .src,.dots{display:none}.demo{margin-top:-60px}}
 @media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}.hint{animation:none}.layer,.sun,.copy,.win{transform:none!important}}
 </style>
+<link rel="stylesheet" href="sections.css">
 </head>
 <body id="top">
 <header class="hero" id="hero">
@@ -112,45 +113,32 @@ footer>*{position:relative;z-index:1}
 </form>
 <iframe id="page" src="start.html" title="Blackcomb" sandbox="allow-scripts allow-forms allow-popups allow-top-navigation-by-user-activation"></iframe>
 </div></section>
-<section class="feat" id="features">
-  <h2 class="rv">Light on the way up.</h2>
-  <div class="grid">
-    <div class="card rv"><h3>A start page that earns it</h3><p>Reading cards, favorites and recent sites as tiles. Not a search box wearing a costume.</p></div>
-    <div class="card rv"><h3>Reading list, read aloud</h3><p>Save a page, read it offline, or have it read to you.</p></div>
-    <div class="card rv"><h3>Private tabs</h3><p>Isolated storage. Close the tab and it is gone.</p></div>
-    <div class="card rv"><h3>Tracker blocking</h3><p>On by default. No setting to find.</p></div>
-    <div class="card rv"><h3>Find in page</h3><p>Command-F, the way your hands expect.</p></div>
-    <div class="card rv"><h3>Bookmarks and history</h3><p>Saved pages come back on launch. History stays on your device.</p></div>
+<section class="band" id="features">
+  <div class="band-head"><div class="band-copy">
+    <p class="label">Light on the way up</p>
+    <h2>A browser, up high.</h2>
+    <p>A text field and a WebKit view, plus the few things worth adding. Free and open source, on Mac, iPhone and iPad.</p>
+  </div></div>
+  <div class="cells">
+    <article class="cell"><p class="label">Start</p><h3>A start page that earns it</h3><p>Reading cards, favorites and recent sites as tiles. Not a search box wearing a costume.</p></article>
+    <article class="cell"><p class="label">Read</p><h3>Reading list, read aloud</h3><p>Save a page, read it offline, or have it read to you.</p></article>
+    <article class="cell"><p class="label">Private</p><h3>Private tabs</h3><p>Isolated storage. Close the tab and it is gone.</p></article>
+    <article class="cell"><p class="label">Block</p><h3>Tracker blocking</h3><p>On by default. No setting to find.</p></article>
+    <article class="cell"><p class="label">Find</p><h3>Find in page</h3><p>Command-F, the way your hands expect.</p></article>
+    <article class="cell"><p class="label">Keep</p><h3>Bookmarks and history</h3><p>Saved pages come back on launch. History stays on your device.</p></article>
   </div>
 </section>
 </main>
-<footer>
-  <section class="foot-story" aria-label="About Blackcomb">
-    <img src="icon.svg" alt="" loading="lazy">
-    <div><h2>Up high.<br>Light on its feet.</h2>
-    <p>A web browser that is a text field and a WebKit view, plus the few things worth adding: a real start page, a reading list, private tabs and tracker blocking. Free and open source, on Mac, iPhone and iPad.</p></div>
-  </section>
-  <div class="foot-rule" aria-hidden="true"><span>Blackcomb</span><span>A browser, up high.</span></div>
-  <nav class="foot-dir" aria-label="Footer">
-    <div class="foot-col"><h3>Blackcomb</h3><ul>
-      <li><a href="#try">Try it live</a></li>
-      <li><a href="search.html">Blackcomb Search</a></li>
-      <li><a href="start.html">Start page</a></li>
-      <li><a href="https://github.com/nulljosh/blackcomb/releases">Releases</a></li></ul></div>
-    <div class="foot-col"><h3>Explore</h3><ul>
-      <li><a href="#try">Demo</a></li>
-      <li><a href="#features">Features</a></li>
-      <li><a href="#top">Back to top</a></li></ul></div>
-    <div class="foot-col"><h3>Developers</h3><ul>
-      <li><a href="https://github.com/nulljosh/blackcomb">Source</a></li>
-      <li><a href="https://github.com/nulljosh/blackcomb/issues">Report a bug</a></li></ul></div>
-    <div class="foot-col"><h3>Project</h3><ul>
-      <li><a href="support.html">Support</a></li>
-      <li><a href="privacy.html">Privacy</a></li>
-      <li><a href="https://github.com/nulljosh/blackcomb/blob/main/LICENSE">License</a></li>
-      <li><a href="https://jaybulb.com">Portfolio</a></li></ul></div>
-  </nav>
-  <div class="foot-bar"><p>Blackcomb &middot; &copy; 2026 Joshua Trommel &middot; Made in Vancouver, BC</p></div>
+<footer class="foot" id="footer">
+  <div class="foot-top">
+    <div class="foot-brand"><img src="icon.svg" alt="" width="40" height="40"><b>Blackcomb</b><p>A browser, up high.</p></div>
+    <nav class="foot-cols" aria-label="Footer">
+      <div><p class="label">Blackcomb</p><a href="#try">Try it live</a><a href="search.html">Blackcomb Search</a><a href="start.html">Start page</a><a href="#features">Features</a></div>
+      <div><p class="label">Source</p><a href="https://github.com/nulljosh/blackcomb">GitHub</a><a href="https://github.com/nulljosh/blackcomb/releases">Releases</a><a href="https://github.com/nulljosh/blackcomb/issues">Report a bug</a><a href="https://github.com/nulljosh/blackcomb/blob/main/LICENSE">License</a></div>
+      <div><p class="label">More</p><a href="support.html">Support</a><a href="privacy.html">Privacy</a><a href="https://jaybulb.com">More apps</a><a href="#top">Back to top</a></div>
+    </nav>
+  </div>
+  <p class="legal">&copy; 2026 Joshua Trommel &middot; MIT License &middot; Made in Vancouver, BC</p>
   <svg class="foot-scene" viewBox="0 0 1600 170" preserveAspectRatio="none" aria-hidden="true">
     <path class="f1" d="M0 120 L150 60 L300 100 L470 30 L640 95 L820 45 L1000 105 L1180 40 L1360 90 L1500 55 L1600 90 V170 H0Z"/>
     <path class="f2" d="M0 140 L200 90 L380 125 L560 70 L760 130 L960 85 L1140 135 L1340 80 L1600 130 V170 H0Z"/>
