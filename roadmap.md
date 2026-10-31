@@ -5,5 +5,4 @@
 - [ ] kmp/ port for Android/Windows/Linux (see native fleet rollout)
 
 ## Ingested 2026-10-30
-- [x] Copy Hermes' landing page, retain the mountain hero
 - [ ] Update GitHub releases (stale)
