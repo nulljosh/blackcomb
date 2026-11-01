@@ -69,23 +69,18 @@ footer>*{position:relative;z-index:1}
 @media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}.hint{animation:none}.layer,.sun,.copy{transform:none!important}}
 </style>
 <link rel="stylesheet" href="sections.css">
+<link rel="stylesheet" href="hero.css?v=2">
+<script src="hero.js?v=2" defer></script>
 </head>
 <body id="top">
 <header class="hero" id="hero">
-  <div class="sun" data-s="0.05"></div>
-  <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
-    <g class="layer" data-s="0.12" data-m="6"><g transform="translate(0 290)"><path class="far" d="M-60 520 L140 440 L230 480 L380 360 L470 420 L620 330 L760 450 L900 390 L1050 470 L1200 380 L1340 450 L1460 400 L1660 470 L1660 1000 L-60 1000Z"/></g></g>
-    <g class="layer" data-s="0.22" data-m="14"><g transform="translate(0 240)"><path class="mid" d="M-60 650 L180 590 L320 620 L520 420 L620 300 L700 380 L760 350 L900 400 L980 470 L1120 520 L1300 480 L1450 560 L1660 540 L1660 1000 L-60 1000Z"/><path class="cap" d="M620 300 L560 372 L600 360 L640 392 L668 350 L700 380Z"/></g></g>
-    <g class="layer" data-s="0.34" data-m="26"><g transform="translate(0 130)"><path class="near" id="trees"/></g></g>
-  </svg>
-  <canvas id="snow"></canvas>
+  <div class="hero-bg" aria-hidden="true" inert><div class="bwall" id="bwall"></div></div>
   <div class="copy" id="copy">
     <img src="icon.svg" alt="">
     <h1>A browser, up high.</h1>
     <p>Blackcomb. WebKit for Mac, iPhone and iPad. Nothing in the way.</p>
     <div class="cta"><a class="btn" href="#features">See what it does</a><a class="btn ghost" href="https://github.com/nulljosh/blackcomb">Source</a></div>
   </div>
-  <div class="hint">scroll</div>
 </header>
 <main>
 <section class="band" id="features">
@@ -121,24 +116,12 @@ footer>*{position:relative;z-index:1}
   </svg>
 </footer>
 <script>
-// Hero: jagged tree line, snow, scroll + pointer parallax. All skipped under reduced motion.
+// Hero parallax: the wall drifts at 0.45, the copy lifts at 0.2 and fades (hero.js fills the wall). Off under reduced motion.
 const rm=matchMedia('(prefers-reduced-motion: reduce)').matches;
-(function(){let d='M-60 1000 L-60 760',x=-60,r=7;const n=()=>(r=r*16807%2147483647)/2147483647;
-while(x<1660){const w=18+n()*26,h=40+n()*90+(Math.sin(x/170)+1)*40;d+=` L${x+w/2} ${760-h} L${x+w} 760`;x+=w}
-document.getElementById('trees').setAttribute('d',d+' L1660 1000Z')})();
-const L=[...document.querySelectorAll('.layer,.sun')],copy=document.getElementById('copy'),hero=document.getElementById('hero');
-let mx=0,tick=0;
-function frame(){tick=0;const y=scrollY,h=hero.offsetHeight;if(y>h*1.2)return;
-for(const e of L){e.style.setProperty('--y',(y*e.dataset.s)+'px');e.style.setProperty('--x',(mx*(e.dataset.m||0))+'px')}
-copy.style.setProperty('--y',(y*.45)+'px');copy.style.setProperty('--o',Math.max(0,1-y/(h*.6)));}
-if(!rm){const q=()=>tick||(tick=requestAnimationFrame(frame));addEventListener('scroll',q,{passive:true});hero.addEventListener('pointermove',e=>{mx=e.clientX/innerWidth-.5;q()});frame()}
-// snow
-const c=document.getElementById('snow'),g=c.getContext('2d');let W,H;const F=[];
-function size(){W=c.width=hero.clientWidth;H=c.height=hero.clientHeight}size();addEventListener('resize',size);
-if(!rm){for(let i=0;i<90;i++)F.push({x:Math.random(),y:Math.random(),r:1+Math.random()*2.2,v:.15+Math.random()*.5});
-(function loop(){g.clearRect(0,0,W,H);g.fillStyle='rgba(255,255,255,.85)';
-for(const f of F){f.y+=f.v/H*1.6;f.x+=Math.sin(f.y*9+f.r)*.0005;if(f.y>1){f.y=0;f.x=Math.random()}g.beginPath();g.arc(f.x*W,f.y*H,f.r,0,7);g.fill()}
-requestAnimationFrame(loop)})()}
+const copy=document.getElementById('copy'),hero=document.getElementById('hero'),bg=hero.querySelector('.hero-bg');let tick=0;
+function frame(){tick=0;const y=scrollY,h=hero.offsetHeight;if(y>h*1.2)return;bg.style.setProperty('--py',(y*.45)+'px');
+copy.style.setProperty('--y',(y*.2)+'px');copy.style.setProperty('--o',Math.max(0,1-y/(h*.7)));}
+if(!rm)addEventListener('scroll',()=>tick||(tick=requestAnimationFrame(frame)),{passive:true});
 // reveal
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.15});
 document.querySelectorAll('.rv').forEach((e,i)=>{e.style.transitionDelay=(i%3)*90+'ms';io.observe(e)});

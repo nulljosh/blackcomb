@@ -19,7 +19,7 @@ v1.0.0, WebKit browser. Named after the mountain above Whistler (Blackcomb, 2026
 - `BLACKCOMB_PROFILE=name` env var gives a throwaway library, defaults and cookie store for QA runs.
 - `ios/Tests/BlackcombTests.swift`: resolve, tabs, library, settings, a real WebKit compile of the blocker rules, and (macOS) the automation parser, auth and MCP/REST routing.
 - `worker/index.js`: `/go?u=` demo proxy for the landing (strips frame-blocking headers; GET, iframe-only, no cookies, frame sandboxed without allow-same-origin).
-- `landing/`: a static mountain hero and the feature band (index.html, no live demo per Joshua 2026-11-01); start.html stands alone; `privacy.html` and `support.html` are the URLs App Store Connect uses. Deployed via `deploy.sh`.
+- `landing/`: the browser at work behind the hero (hero.js: cards type an address, load, land one feature each) and the feature band; start.html stands alone; `privacy.html` and `support.html` are the URLs App Store Connect uses. Deployed via `deploy.sh`.
 
 ## Build
 
