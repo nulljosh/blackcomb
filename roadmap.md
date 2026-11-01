@@ -5,4 +5,4 @@
 - [ ] kmp/ port for Android/Windows/Linux (see native fleet rollout)
 
 ## Ingested 2026-10-30
-- [ ] Update GitHub releases (stale)
+- [x] (11-01: tag, release and README all match) Update GitHub releases (stale)
