@@ -36,7 +36,16 @@ struct BlackcombApp: App {
             CommandGroup(replacing: .newItem) {
                 Button("New Tab") { tabs.add() }.keyboardShortcut("t")
                 Button("New Private Tab") { tabs.add(isPrivate: true) }.keyboardShortcut("n", modifiers: [.command, .shift])
+                #if os(macOS)
+                // Command-W closes the front window unless that is the browser with tabs to spare.
+                Button("Close") {
+                    guard let front = NSApp.keyWindow else { return }
+                    if front === services.browserWindow, tabs.pages.count > 1 { tabs.close(tabs.page) } else { front.performClose(nil) }
+                }
+                .keyboardShortcut("w")
+                #else
                 Button("Close Tab") { tabs.close(tabs.page) }.keyboardShortcut("w").disabled(tabs.pages.count == 1)
+                #endif
             }
             #if os(macOS)
             CommandGroup(after: .toolbar) {
@@ -84,5 +93,12 @@ struct BlackcombApp: App {
                 Button("Settings…") { services.sheet = .settings }.keyboardShortcut(",")
             }
         }
+        #if os(macOS)
+        // One window per panel: opening Bookmarks twice brings the same window forward.
+        WindowGroup(id: "panel", for: Services.Sheet.self) { $sheet in
+            if let sheet { PanelView(sheet: sheet, tabs: tabs, services: services) }
+        }
+        .defaultSize(width: 560, height: 640)
+        #endif
     }
 }

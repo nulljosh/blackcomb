@@ -4,6 +4,9 @@ import WebKit
 struct BrowserView: View {
     @ObservedObject var tabs: Tabs
     @ObservedObject var services: Services
+    #if os(macOS)
+    @Environment(\.openWindow) private var openWindow
+    #endif
 
     var body: some View {
         Group {
@@ -19,15 +22,17 @@ struct BrowserView: View {
         }
         .onAppear { drain() }
         .onChange(of: services.incoming) { _, _ in drain() }
-        .sheet(item: $services.sheet) { sheet in
-            switch sheet {
-            case .bookmarks: BookmarksView(tabs: tabs, library: services.library)
-            case .history: HistoryView(tabs: tabs, library: services.library)
-            case .settings: SettingsView(settings: services.settings, library: services.library)
-            case .siteRules: SiteRulesView(page: tabs.page, sites: services.sites)
-            case .reading: ReadingListView(tabs: tabs, services: services)
-            }
+        #if os(iOS)
+        .sheet(item: $services.sheet) { PanelView(sheet: $0, tabs: tabs, services: services) }
+        #else
+        // On the Mac a panel is a real window, so Command-W closes it and not the tab behind it.
+        .background(WindowReader { services.browserWindow = $0 })
+        .onChange(of: services.sheet) { _, sheet in
+            guard let sheet else { return }
+            openWindow(id: "panel", value: sheet)
+            services.sheet = nil
         }
+        #endif
     }
 
     /// Opens links that arrived from Shortcuts or the Share extension.
@@ -43,6 +48,34 @@ struct BrowserView: View {
         }
     }
 }
+
+/// Bookmarks, History, Settings and the rest: a sheet on iPhone, its own window on the Mac.
+struct PanelView: View {
+    let sheet: Services.Sheet
+    @ObservedObject var tabs: Tabs
+    @ObservedObject var services: Services
+
+    var body: some View {
+        switch sheet {
+        case .bookmarks: BookmarksView(tabs: tabs, library: services.library)
+        case .history: HistoryView(tabs: tabs, library: services.library)
+        case .settings: SettingsView(settings: services.settings, library: services.library)
+        case .siteRules: SiteRulesView(page: tabs.page, sites: services.sites)
+        case .reading: ReadingListView(tabs: tabs, services: services)
+        }
+    }
+}
+
+#if os(macOS)
+/// Hands back the NSWindow a view lives in.
+struct WindowReader: NSViewRepresentable {
+    let found: (NSWindow) -> Void
+    func makeNSView(context: Context) -> NSView { NSView() }
+    func updateNSView(_ view: NSView, context: Context) {
+        DispatchQueue.main.async { if let window = view.window { found(window) } }
+    }
+}
+#endif
 
 struct PageView: View {
     @ObservedObject var tabs: Tabs

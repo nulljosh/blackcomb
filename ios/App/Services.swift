@@ -1,3 +1,6 @@
+#if os(macOS)
+import AppKit
+#endif
 import SwiftUI
 import WebKit
 
@@ -103,7 +106,10 @@ final class ContentBlocker {
 final class Services: ObservableObject {
     static let shared = Services()
 
-    enum Sheet: String, Identifiable {
+    #if os(macOS)
+    weak var browserWindow: NSWindow?
+    #endif
+    enum Sheet: String, Identifiable, Codable {
         case bookmarks, history, settings, siteRules, reading
         var id: String { rawValue }
     }
