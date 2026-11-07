@@ -11,4 +11,3 @@
 
 ## Ingested 2026-11-06
 - [ ] Needs better icon.
-- [ ] Double check we already have the brand kit, design system etc.
