@@ -7,7 +7,7 @@
 ## Ingested 2026-10-30
 
 ## Ingested 2026-11-03
-- [ ] App Review sent an "issue with your submission" email (Nov 1-2): read the reason in Resolution Center (asc web review show), no reply without Joshua's yes
+- [x] (2026-11-07: handled, iOS 1.0.0 resubmitted 2026-11-04 and waiting for review; GitHub issue #8 still open, closing it was blocked) App Review sent an "issue with your submission" email (Nov 1-2): read the reason in Resolution Center (asc web review show), no reply without Joshua's yes
 
 ## Ingested 2026-11-06
 - [ ] Needs better icon.
