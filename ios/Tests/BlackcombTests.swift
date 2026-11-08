@@ -331,6 +331,8 @@ final class SiteRulesTests: XCTestCase {
         let plain = await page.decide(request: URLRequest(url: URL(string: "https://other.org/")!), preferences: WKWebpagePreferences())
         XCTAssertTrue(plain.1.allowsContentJavaScript)
         XCTAssertEqual(page.web.configuration.userContentController.userScripts.count, 0)
+        let http = await page.decide(request: URLRequest(url: URL(string: "http://example.org/")!), preferences: WKWebpagePreferences())
+        XCTAssertEqual(http.1.preferredHTTPSNavigationPolicy, .automaticFallbackToHTTP, "HTTPS first")
     }
 }
 

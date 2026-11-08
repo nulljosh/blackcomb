@@ -201,6 +201,8 @@ final class Page: NSObject, ObservableObject, Identifiable, WKNavigationDelegate
 
     private func applyRules(for url: URL, to preferences: WKWebpagePreferences) {
         let rule = services.sites.rule(for: url)
+        // HTTPS first: an http:// address is tried over https, falling back to http only if that fails.
+        preferences.preferredHTTPSNavigationPolicy = .automaticFallbackToHTTP
         preferences.allowsContentJavaScript = !rule.blockScripts
         let controller = web.configuration.userContentController
         controller.removeAllUserScripts()
