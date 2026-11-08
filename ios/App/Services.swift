@@ -154,7 +154,21 @@ final class Services: ObservableObject {
         }
         sites.onChange = refresh
         refresh()
+        // A fresh start page shows Favorites, like Safari's. Seeded once: deleting one keeps it gone.
+        if !defaults.bool(forKey: "seededFavorites") {
+            defaults.set(true, forKey: "seededFavorites")
+            if library.bookmarks.isEmpty { library.addBookmarks(Services.defaultFavorites) }
+        }
     }
+
+    static let defaultFavorites = [
+        Bookmark(title: "Google", url: "https://www.google.com/"),
+        Bookmark(title: "YouTube", url: "https://www.youtube.com/"),
+        Bookmark(title: "Gmail", url: "https://mail.google.com/"),
+        Bookmark(title: "Wikipedia", url: "https://en.wikipedia.org/"),
+        Bookmark(title: "Maps", url: "https://maps.google.com/"),
+        Bookmark(title: "GitHub", url: "https://github.com/"),
+    ]
 }
 
 struct IncomingLink: Equatable, Identifiable {

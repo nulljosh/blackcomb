@@ -38,8 +38,6 @@ struct StartView: View {
         return library.history.filter { seen.insert(siteName($0.url)).inserted }.prefix(8).map { $0 }
     }
 
-    private var isEmpty: Bool { library.saved.isEmpty && library.bookmarks.isEmpty && library.history.isEmpty }
-
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 32) {
@@ -77,7 +75,7 @@ struct StartView: View {
                         }
                     }
                 }
-                if isEmpty, !page.isPrivate {
+                if library.history.isEmpty, library.saved.isEmpty, !page.isPrivate {
                     section("Welcome to Blackcomb") {
                         VStack(alignment: .leading, spacing: 16) {
                             #if os(macOS)

@@ -31,6 +31,8 @@ struct BlackcombApp: App {
         WindowGroup { BrowserView(tabs: tabs, services: services) }
         #if os(macOS)
         .defaultSize(width: 1100, height: 760)
+        // The address bar sits in the title bar row beside the window buttons, like Safari's compact tabs.
+        .windowStyle(.hiddenTitleBar)
         #endif
         .commands {
             CommandGroup(replacing: .newItem) {

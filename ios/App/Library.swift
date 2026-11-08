@@ -77,6 +77,12 @@ final class Library: ObservableObject {
         save(bookmarks, to: "bookmarks.json")
     }
 
+    /// Appends in order, skipping addresses already bookmarked.
+    func addBookmarks(_ items: [Bookmark]) {
+        bookmarks += items.filter { !isBookmarked($0.url) }
+        save(bookmarks, to: "bookmarks.json")
+    }
+
     func removeBookmarks(_ items: [Bookmark]) {
         let ids = Set(items.map(\.id))
         bookmarks.removeAll { ids.contains($0.id) }

@@ -147,6 +147,9 @@ struct PageView: View {
         }
         .buttonStyle(.borderless)
         .padding(.horizontal, 10).padding(.vertical, 6)
+        #if os(macOS)
+        .padding(.leading, 70).frame(height: 40)
+        #endif
         .background(page.isPrivate ? AnyShapeStyle(.thickMaterial) : AnyShapeStyle(.bar))
     }
 
@@ -154,7 +157,7 @@ struct PageView: View {
         HStack(spacing: 6) {
             Image(systemName: addressIcon).foregroundStyle(.secondary).font(.footnote)
                 .accessibilityLabel(page.secure ? "Secure connection" : "Address")
-            TextField(page.isPrivate ? "Private tab: search or enter address" : "Search or enter address",
+            TextField(page.isPrivate ? "Private tab: search or enter address" : "Search \(settings.engine.name) or enter address",
                       text: $page.address)
                 .textFieldStyle(.plain)
                 .focused($editing)
@@ -236,6 +239,11 @@ struct TabChip: View {
             HStack(spacing: 4) {
                 if page.isPrivate { Image(systemName: "eyeglasses").font(.caption) }
                 Text(page.title).lineLimit(1).frame(maxWidth: 160)
+                if tabs.pages.count > 1 {
+                    Button { tabs.close(page) } label: { Image(systemName: "xmark").font(.caption2.weight(.semibold)) }
+                        .buttonStyle(.plain).foregroundStyle(.secondary)
+                        .accessibilityLabel("Close " + page.title)
+                }
             }
             .padding(.horizontal, 10).padding(.vertical, 5)
             .background(tabs.current == page.id ? Color.accentColor.opacity(0.18) : .clear, in: Capsule())
@@ -400,6 +408,13 @@ struct SettingsView: View {
                             #if os(iOS)
                             .keyboardType(.URL).textInputAutocapitalization(.never).autocorrectionDisabled()
                             #endif
+                    }
+                    Picker("New tabs open", selection: $settings.homepage) {
+                        Text("Start page").tag("")
+                        Text("Google").tag("https://www.google.com/")
+                        if !["", "https://www.google.com/"].contains(settings.homepage) {
+                            Text("Homepage above").tag(settings.homepage)
+                        }
                     }
                 } header: {
                     Text("Search")

@@ -13,7 +13,7 @@
 /* written by make_brand_page.py; white paper in light mode, the shared tokens in dark */
 @media (prefers-color-scheme: light) { :root { --color-bg: #fff; --color-bg2: #f5f5f7; --color-hairline: #e5e5ea; } }
 :root { --a: #0a5fd6; --a-light: #4db8ff; --a-deep: #0a5fd6; --a-solid: #0a5fd6; --a-link: #0a5fd6; --ink: var(--color-text, #1d1d1f); --paper: var(--color-bg, #fff); --surface: var(--color-bg2, #f5f5f7); --line: var(--color-hairline, #e5e5ea); --sub: var(--color-secondary, rgba(0,0,0,.64)); }
-@media (prefers-color-scheme: dark) { :root { --a-link: #4db8ff; } }
+@media (prefers-color-scheme: dark) { :root { --a-link: #4db8ff; --color-bg: #000; --color-bg2: #1c1c1e; --color-hairline: #38383a; --color-text: #f5f5f7; --color-secondary: rgba(255,255,255,.64); } }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 17px; line-height: 24px; color: var(--ink); background: var(--paper); -webkit-font-smoothing: antialiased; }
 a { color: var(--a-link); }
@@ -100,10 +100,10 @@ footer { padding: 48px 0; text-align: center; font-size: 13px; color: var(--sub)
       <div class="card"><div class="sw" style="background:#4db8ff"></div><b>Accent light</b><small><code>#4db8ff</code>. The top of the icon.</small></div>
       <div class="card"><div class="sw" style="background:#0a5fd6"></div><b>Accent deep</b><small><code>#0a5fd6</code>. The foot of the icon.</small></div>
       <div class="card"><div class="sw" style="background:linear-gradient(#4db8ff,#0a5fd6)"></div><b>Icon gradient</b><small><code>#4db8ff</code> to <code>#0a5fd6</code>, top to bottom.</small></div>
-      <div class="card"><div class="sw" style="background:#fff"></div><b>Paper</b><small><code>#ffffff</code> light, <code>#1c1a17</code> dark.</small></div>
-      <div class="card"><div class="sw" style="background:#f5f5f7"></div><b>Surface</b><small><code>#f5f5f7</code> light, <code>#26231f</code> dark.</small></div>
-      <div class="card"><div class="sw" style="background:#e5e5ea"></div><b>Hairline</b><small><code>#e5e5ea</code> light, <code>#3a352e</code> dark.</small></div>
-      <div class="card"><div class="sw" style="background:#1d1d1f"></div><b>Ink</b><small><code>#1d1d1f</code> light, <code>#f5f0e4</code> dark.</small></div>
+      <div class="card"><div class="sw" style="background:#fff"></div><b>Paper</b><small><code>#ffffff</code> light, <code>#000000</code> dark.</small></div>
+      <div class="card"><div class="sw" style="background:#f5f5f7"></div><b>Surface</b><small><code>#f5f5f7</code> light, <code>#1c1c1e</code> dark.</small></div>
+      <div class="card"><div class="sw" style="background:#e5e5ea"></div><b>Hairline</b><small><code>#e5e5ea</code> light, <code>#38383a</code> dark.</small></div>
+      <div class="card"><div class="sw" style="background:#1d1d1f"></div><b>Ink</b><small><code>#1d1d1f</code> light, <code>#f5f5f7</code> dark.</small></div>
     </div>
   </section>
 

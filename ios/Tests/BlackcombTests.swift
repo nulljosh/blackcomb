@@ -491,3 +491,16 @@ final class AutomationTests: XCTestCase {
     }
 }
 #endif
+
+@MainActor
+final class FavoritesSeedTests: XCTestCase {
+    func testSeedsOnceAndDeletedStayGone() {
+        let dir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        let defaults = UserDefaults(suiteName: UUID().uuidString)!
+        let s = Services(directory: dir, defaults: defaults)
+        XCTAssertEqual(s.library.bookmarks.first?.title, "Google")
+        XCTAssertEqual(s.library.bookmarks.count, Services.defaultFavorites.count)
+        s.library.removeBookmarks(s.library.bookmarks)
+        XCTAssertTrue(Services(directory: dir, defaults: defaults).library.bookmarks.isEmpty, "not seeded twice")
+    }
+}
