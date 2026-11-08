@@ -35,8 +35,14 @@ struct TabGrid: View {
                 ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } }
             }
             .task {
-                for p in tabs.pages where p.web.url != nil {
-                    if let image = await Self.snapshot(p.web) { shots[p.id] = image }
+                // Pages still loading get pictured again once they settle (restored tabs load at launch).
+                var pending = tabs.pages.filter { $0.web.url != nil }
+                for _ in 0..<5 where !pending.isEmpty {
+                    for p in pending {
+                        if let image = await Self.snapshot(p.web) { shots[p.id] = image }
+                    }
+                    pending = pending.filter(\.loading)
+                    try? await Task.sleep(for: .seconds(1.5))
                 }
             }
         }
@@ -52,16 +58,20 @@ struct TabGrid: View {
             dismiss()
         } label: {
             VStack(alignment: .leading, spacing: 8) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 20, style: .continuous).fill(.quaternary)
-                    if let shot = shots[p.id] {
-                        shot.resizable().aspectRatio(contentMode: .fill)
-                    } else {
-                        Image(systemName: p.isPrivate ? "eyeglasses" : "safari").font(.largeTitle).foregroundStyle(.secondary)
+                // The card sets the size; the picture fills it from the top and is cut to it.
+                RoundedRectangle(cornerRadius: 20, style: .continuous).fill(.quaternary)
+                    .frame(maxWidth: .infinity).frame(height: 200)
+                    .overlay(alignment: .top) {
+                        if let shot = shots[p.id] {
+                            shot.resizable().aspectRatio(contentMode: .fill)
+                                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .top)
+                        } else {
+                            Image(systemName: p.isPrivate ? "eyeglasses" : "safari").font(.largeTitle).foregroundStyle(.secondary)
+                                .frame(maxHeight: .infinity)
+                        }
                     }
-                }
-                .frame(height: 200)
-                .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+                    .clipped()
+                    .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
                 .overlay {
                     RoundedRectangle(cornerRadius: 20, style: .continuous)
                         .strokeBorder(selected ? Color.accentColor : .clear, lineWidth: 3)

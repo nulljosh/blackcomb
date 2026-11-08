@@ -15,7 +15,7 @@ Compared against App Store screens of Safari, Chrome, Edge, Firefox, Brave, Duck
 | 4 | Site icons on Favorites tiles and tabs, fetched from the site itself and kept on the device | Safari, Chrome, Orion, DDG | M | done in 1.1.0 |
 | 5 | Fire button: close every tab and clear site data in one step | DuckDuckGo, Brave | S | done in 1.1.0 |
 | 6 | Automatic HTTPS upgrade | Orion, DuckDuckGo, Brave | S | done (next build) |
-| 7 | Tab overview grid with search (iPhone and iPad; Shift-Cmd-\\ on Mac) | Safari, Chrome, Orion, Edge | L | built, visual QA pending |
+| 7 | Tab overview grid with search (iPhone and iPad; Shift-Cmd-Backslash on Mac) | Safari, Chrome, Orion, Edge | L | done (next build) |
 | 8 | Translate the page on device (Translation framework) | Chrome, Safari, Edge | L | todo |
 | 9 | Tab groups | Safari, Orion | L | todo |
 | - | Unified title bar, tab close buttons, default Favorites, blue icon in dark mode | Safari | S | done (bd2fe27 and next) |
