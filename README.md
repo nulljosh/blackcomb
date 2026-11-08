@@ -1,6 +1,6 @@
 <img src="icon.svg" width="80" alt="">
 
-![version](https://img.shields.io/badge/version-v1.0.0-blue) ![license](https://img.shields.io/badge/license-MIT-green)
+![version](https://img.shields.io/badge/version-v1.1.0-blue) ![license](https://img.shields.io/badge/license-MIT-green)
 
 A web browser is a text field and a WebKit view. Everything else is opinion. Named after the mountain above Whistler.
 

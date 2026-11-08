@@ -1,6 +1,6 @@
 # Blackcomb
 
-v1.0.0, WebKit browser. Named after the mountain above Whistler (Blackcomb, 2026-10-18; before that Madobe, Lucarne, Nook). Bundle id stays com.nulljosh.lucarne and the Cloudflare Worker stays `madobe`; everything else says Blackcomb. One xcodegen target for iOS and macOS, a handful of SwiftUI files. No web build (it's a browser). Plain English words and Vancouver's best-known peaks (Grouse, Seymour, Cypress) are all taken on the App Store; the probe log is in memory.
+v1.1.0, WebKit browser. Named after the mountain above Whistler (Blackcomb, 2026-10-18; before that Madobe, Lucarne, Nook). Bundle id stays com.nulljosh.lucarne and the Cloudflare Worker stays `madobe`; everything else says Blackcomb. One xcodegen target for iOS and macOS, a handful of SwiftUI files. No web build (it's a browser). Plain English words and Vancouver's best-known peaks (Grouse, Seymour, Cypress) are all taken on the App Store; the probe log is in memory.
 
 ## Files
 

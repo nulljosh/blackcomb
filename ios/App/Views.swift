@@ -287,15 +287,16 @@ struct TabStrip: View {
 struct TabChip: View {
     @ObservedObject var tabs: Tabs
     @ObservedObject var page: Page
+    @ObservedObject private var icons = Services.shared.icons
     var body: some View {
         Button { tabs.current = page.id } label: {
             HStack(spacing: 4) {
                 if page.isPrivate {
                     Image(systemName: "eyeglasses").font(.caption)
-                } else if let icon = Services.shared.icons.icon(for: page.address) {
+                } else if let icon = icons.icon(for: page.address) {
                     icon.resizable().interpolation(.high).frame(width: 14, height: 14).clipShape(RoundedRectangle(cornerRadius: 3))
                 }
-                Text(page.title).lineLimit(1).frame(maxWidth: 160)
+                Text(page.title.isEmpty ? "New Tab" : page.title).lineLimit(1).frame(maxWidth: 160)
                 if tabs.pages.count > 1 {
                     Button { tabs.close(page) } label: { Image(systemName: "xmark").font(.caption2.weight(.semibold)) }
                         .buttonStyle(.plain).foregroundStyle(.secondary)

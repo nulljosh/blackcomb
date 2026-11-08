@@ -1,8 +1,8 @@
 import SwiftUI
 import WebKit
 
-/// Site icons for Favorites, Recent and tabs. Learned from a page you load (its own icon link, fetched from
-/// that same site) and kept as small files on the device. No icon service is ever asked.
+/// Site icons for Favorites, Recent and tabs. Learned from a page you load (the icon the page itself links to,
+/// fetched again without cookies) and kept as small files on the device. No icon service is ever asked.
 @MainActor
 final class SiteIcons: ObservableObject {
     @Published private var cache: [String: Image] = [:]
@@ -48,7 +48,7 @@ final class SiteIcons: ObservableObject {
               !FileManager.default.fileExists(atPath: file(key).path) else { return }
         let found = try? await web.evaluateJavaScript(Self.linkScript)
         guard let href = found as? String, let url = URL(string: href), url.scheme == "https",
-              let host = SiteKey.key(for: url), Self.sameSite(host, key) else { return }
+              SiteKey.key(for: url) != nil else { return }
         var request = URLRequest(url: url, cachePolicy: .returnCacheDataElseLoad, timeoutInterval: 10)
         request.httpShouldHandleCookies = false
         guard let (data, response) = try? await URLSession.shared.data(for: request),
@@ -57,11 +57,6 @@ final class SiteIcons: ObservableObject {
         try? data.write(to: file(key), options: .atomic)
         missing.remove(key)
         cache[key] = image
-    }
-
-    /// The icon must come from the page's own site (or a parent or child of it), never a third party.
-    nonisolated static func sameSite(_ a: String, _ b: String) -> Bool {
-        a == b || a.hasSuffix("." + b) || b.hasSuffix("." + a)
     }
 
     func removeAll() {
