@@ -89,6 +89,17 @@ final class Page: NSObject, ObservableObject, Identifiable, WKNavigationDelegate
     /// Applies the zoom from this site's rule to the page on screen.
     func applyZoom() { web.pageZoom = services.sites.rule(for: web.url).pageZoom }
 
+    /// Command-plus, minus and zero. The zoom is kept as this site's rule, like Safari remembers it per site;
+    /// a private tab only zooms the page in front of you.
+    func zoom(by step: Double?) {
+        let next = step.map { (((web.pageZoom + $0) * 10).rounded() / 10) } ?? 1
+        web.pageZoom = min(max(next, SiteRule.zoomRange.lowerBound), SiteRule.zoomRange.upperBound)
+        guard !isPrivate, let key = SiteKey.key(for: web.url) else { return }
+        var rule = services.sites.rule(for: web.url)
+        rule.zoom = web.pageZoom
+        services.sites.set(rule, forKey: key)
+    }
+
     func go(_ input: String) {
         guard let u = resolve(input, engine: services.settings.engine) else { return }
         web.load(URLRequest(url: u))
@@ -133,6 +144,7 @@ final class Page: NSObject, ObservableObject, Identifiable, WKNavigationDelegate
         sync()
         if !isPrivate, let url = w.url, url.scheme == "https" || url.scheme == "http" {
             services.library.record(title: title, url: url.absoluteString)
+            Task { await services.icons.learn(from: w) }
         }
         onChange?()
         flushWaiters()
@@ -155,7 +167,23 @@ final class Page: NSObject, ObservableObject, Identifiable, WKNavigationDelegate
     /// Page loads also pick up the site's rules: scripts on or off, a dark look, zoom.
     func webView(_ w: WKWebView, decidePolicyFor action: WKNavigationAction,
                  preferences: WKWebpagePreferences) async -> (WKNavigationActionPolicy, WKWebpagePreferences) {
-        await decide(request: action.request, mainFrame: action.targetFrame?.isMainFrame ?? true, preferences: preferences)
+        if action.shouldPerformDownload { return (.download, preferences) }
+        return await decide(request: action.request, mainFrame: action.targetFrame?.isMainFrame ?? true, preferences: preferences)
+    }
+
+    /// What the page cannot show, or what the server marks as an attachment, is saved as a download.
+    func webView(_ w: WKWebView, decidePolicyFor response: WKNavigationResponse) async -> WKNavigationResponsePolicy {
+        let disposition = (response.response as? HTTPURLResponse)?.value(forHTTPHeaderField: "Content-Disposition") ?? ""
+        if response.isForMainFrame, disposition.lowercased().hasPrefix("attachment") { return .download }
+        return response.canShowMIMEType ? .allow : .download
+    }
+
+    func webView(_ w: WKWebView, navigationAction: WKNavigationAction, didBecome download: WKDownload) {
+        services.downloads.adopt(download)
+    }
+
+    func webView(_ w: WKWebView, navigationResponse: WKNavigationResponse, didBecome download: WKDownload) {
+        services.downloads.adopt(download)
     }
 
     /// The decision behind the delegate call, kept apart so tests can run it without a real navigation.
@@ -201,6 +229,8 @@ final class Tabs: ObservableObject {
     private let services: Services
     private let defaults: UserDefaults?
     static let restoreKey = "tabs.urls"
+    /// Addresses of recently closed tabs, newest last, for Reopen Closed Tab. Private tabs are never kept.
+    @Published private(set) var closed: [String] = []
 
     init(services: Services = .shared, restore: Bool = false, defaults: UserDefaults = .standard) {
         self.services = services
@@ -232,9 +262,45 @@ final class Tabs: ObservableObject {
 
     func close(_ p: Page) {
         guard pages.count > 1, let i = pages.firstIndex(where: { $0.id == p.id }) else { return }
+        if !p.isPrivate, let url = p.web.url?.absoluteString {
+            closed.append(url)
+            if closed.count > 20 { closed.removeFirst() }
+        }
         pages.remove(at: i)
         if current == p.id { current = pages[min(i, pages.count - 1)].id }
         save()
+    }
+
+    /// The fire button: every tab closes, history, cookies and site data go, and one fresh tab is left.
+    /// Bookmarks, the reading list and site rules stay.
+    func burn() async {
+        closed = []
+        pair = nil
+        let fresh = Page(services: services)
+        wire(fresh)
+        pages = [fresh]
+        current = fresh.id
+        save()
+        services.library.clearHistory()
+        services.icons.removeAll()
+        await services.dataStore.removeData(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes(), modifiedSince: .distantPast)
+    }
+
+    func reopenClosed() {
+        guard let url = closed.popLast() else { return }
+        add(url)
+    }
+
+    /// Command-1 to 8 pick that tab; Command-9 is always the last one, like Safari.
+    func select(number n: Int) {
+        let i = n == 9 ? pages.count - 1 : n - 1
+        if pages.indices.contains(i) { current = pages[i].id }
+    }
+
+    /// Control-Tab and Control-Shift-Tab, wrapping around.
+    func cycle(_ step: Int) {
+        guard let i = pages.firstIndex(where: { $0.id == current }) else { return }
+        current = pages[(i + step + pages.count) % pages.count].id
     }
 
     /// Opens a link that arrived from outside the window. Float is handled by the Mac window code.

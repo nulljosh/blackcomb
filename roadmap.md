@@ -4,6 +4,22 @@
 - [ ] Share extension: send a link from Safari to a Blackcomb tab or the second Pair pane. Dropped from 1.0.0 because it needs an app group and a signed extension target.
 - [ ] kmp/ port for Android/Windows/Linux (see native fleet rollout)
 
+## Gap matrix (mobbin pass 2026-11-07)
+Compared against App Store screens of Safari, Chrome, Edge, Firefox, Brave, DuckDuckGo, Orion, Arc Search, Opera, Aloha. One row per minor version, daily use first. Skipped on purpose: sync, VPN, AI chat, extensions, password manager, ads.
+
+| # | Gap | Who has it | Size | Status |
+|---|-----|-----------|------|--------|
+| 1 | Downloads: save files (Mac ~/Downloads, iOS Files), a Downloads list | all ten | M | todo |
+| 2 | Address bar suggestions from your own history and bookmarks as you type | Safari, Chrome, Edge, Firefox, Orion | M | todo |
+| 3 | Keyboard: reopen closed tab (Shift-Cmd-T), Cmd-1..9 tabs, Cmd +/- zoom, Ctrl-Tab | Safari, Chrome, Orion (Mac) | S | todo |
+| 4 | Site icons on Favorites tiles and tabs, fetched from the site itself and kept on the device | Safari, Chrome, Orion, DDG | M | todo |
+| 5 | Fire button: close every tab and clear site data in one step | DuckDuckGo, Brave | S | todo |
+| 6 | Automatic HTTPS upgrade | Orion, DuckDuckGo, Brave | S | todo |
+| 7 | Tab overview grid with search (iPhone and iPad) | Safari, Chrome, Orion, Edge | L | todo |
+| 8 | Translate the page on device (Translation framework) | Chrome, Safari, Edge | L | todo |
+| 9 | Tab groups | Safari, Orion | L | todo |
+| - | Unified title bar, tab close buttons, default Favorites, blue icon in dark mode | Safari | S | done (bd2fe27 and next) |
+
 ## Ingested 2026-10-30
 
 ## Ingested 2026-11-03

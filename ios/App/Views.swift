@@ -17,7 +17,9 @@ struct BrowserView: View {
                 NavigationStack { PageView(tabs: tabs, page: tabs.page, services: services).id(tabs.current) }
             }
             #else
+            // The chrome row shares the title bar with the window buttons (hiddenTitleBar in BlackcombApp).
             PageView(tabs: tabs, page: tabs.page, services: services).id(tabs.current)
+                .ignoresSafeArea(.container, edges: .top)
             #endif
         }
         .onAppear { drain() }
@@ -62,6 +64,7 @@ struct PanelView: View {
         case .settings: SettingsView(settings: services.settings, library: services.library)
         case .siteRules: SiteRulesView(page: tabs.page, sites: services.sites)
         case .reading: ReadingListView(tabs: tabs, services: services)
+        case .downloads: DownloadsView(downloads: services.downloads)
         }
     }
 }
@@ -100,6 +103,12 @@ struct PageView: View {
             chrome
             if tabs.pages.count > 1 { TabStrip(tabs: tabs) }
             if services.finding { FindBar(page: page, isShowing: $services.finding) }
+            if editing, !page.address.isEmpty, page.address != page.web.url?.absoluteString {
+                Suggestions(query: page.address, library: library, engine: settings.engine) { url in
+                    page.go(url)
+                    editing = false
+                }
+            }
             if let error = page.errorMessage {
                 Text(error).font(.callout).padding().accessibilityLabel("Page error: " + error)
             }
@@ -111,6 +120,12 @@ struct PageView: View {
             }
         }
         .navigationTitle(page.title)
+        .confirmationDialog("Close every tab and clear history, cookies and site data?", isPresented: $services.confirmBurn,
+                            titleVisibility: .visible) {
+            Button("Close Tabs and Clear Data", role: .destructive) { Task { await tabs.burn() } }
+        } message: {
+            Text("Bookmarks, the reading list and site rules stay.")
+        }
         .onChange(of: services.addressFocusTick) { _, _ in editing = true }
         #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
@@ -143,6 +158,7 @@ struct PageView: View {
             }
             .disabled(page.address.isEmpty)
             .accessibilityLabel(bookmarked ? "Remove bookmark" : "Add bookmark")
+            DownloadsButton(downloads: services.downloads) { services.sheet = .downloads }
             menu
         }
         .buttonStyle(.borderless)
@@ -210,12 +226,49 @@ struct PageView: View {
             Button { services.sheet = .reading } label: { Label("Reading List", systemImage: "text.book.closed") }
             Button { services.sheet = .bookmarks } label: { Label("Bookmarks", systemImage: "star") }
             Button { services.sheet = .history } label: { Label("History", systemImage: "clock") }
+            Button(role: .destructive) { services.confirmBurn = true } label: { Label("Close Tabs and Clear Data", systemImage: "flame") }
+            Button { services.sheet = .downloads } label: { Label("Downloads", systemImage: "arrow.down.circle") }
             Button { services.sheet = .settings } label: { Label("Settings", systemImage: "gearshape") }
         } label: {
             Image(systemName: "ellipsis.circle")
         }
         .menuIndicator(.hidden)
         .accessibilityLabel("More")
+    }
+}
+
+/// Matches from your bookmarks and history under the address bar, plus a plain search for what you typed.
+struct Suggestions: View {
+    let query: String
+    @ObservedObject var library: Library
+    let engine: SearchEngine
+    let pick: (String) -> Void
+
+    var body: some View {
+        let hits = library.suggestions(for: query)
+        VStack(alignment: .leading, spacing: 0) {
+            row("magnifyingglass", "Search \(engine.name) for \u{201C}\(query)\u{201D}", nil) { pick(query) }
+            ForEach(hits, id: \.url) { b in
+                row(library.isBookmarked(b.url) ? "star" : "clock", b.title, siteName(b.url)) { pick(b.url) }
+            }
+        }
+        .padding(.vertical, 4)
+        .background(.bar)
+        .overlay(alignment: .bottom) { Divider() }
+    }
+
+    private func row(_ symbol: String, _ title: String, _ detail: String?, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            HStack(spacing: 12) {
+                Image(systemName: symbol).foregroundStyle(.secondary).frame(width: 20)
+                Text(title).lineLimit(1)
+                if let detail { Text(detail).foregroundStyle(.secondary).lineLimit(1) }
+                Spacer()
+            }
+            .padding(.horizontal, 16).padding(.vertical, 8)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
     }
 }
 
@@ -237,7 +290,11 @@ struct TabChip: View {
     var body: some View {
         Button { tabs.current = page.id } label: {
             HStack(spacing: 4) {
-                if page.isPrivate { Image(systemName: "eyeglasses").font(.caption) }
+                if page.isPrivate {
+                    Image(systemName: "eyeglasses").font(.caption)
+                } else if let icon = Services.shared.icons.icon(for: page.address) {
+                    icon.resizable().interpolation(.high).frame(width: 14, height: 14).clipShape(RoundedRectangle(cornerRadius: 3))
+                }
                 Text(page.title).lineLimit(1).frame(maxWidth: 160)
                 if tabs.pages.count > 1 {
                     Button { tabs.close(page) } label: { Image(systemName: "xmark").font(.caption2.weight(.semibold)) }
@@ -289,163 +346,5 @@ struct FindBar: View {
         config.wraps = true
         config.caseSensitive = false
         Task { found = (try? await page.web.find(text, configuration: config))?.matchFound }
-    }
-}
-
-struct BookmarksView: View {
-    @ObservedObject var tabs: Tabs
-    @ObservedObject var library: Library
-    @Environment(\.dismiss) private var dismiss
-    @State private var filter = ""
-
-    private var items: [Bookmark] {
-        filter.isEmpty ? library.bookmarks
-            : library.bookmarks.filter { $0.title.localizedCaseInsensitiveContains(filter) || $0.url.localizedCaseInsensitiveContains(filter) }
-    }
-
-    var body: some View {
-        NavigationStack {
-            List {
-                ForEach(items) { b in
-                    Button { tabs.page.go(b.url); dismiss() } label: {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(b.title).lineLimit(1)
-                            Text(b.url).font(.caption).foregroundStyle(.secondary).lineLimit(1)
-                        }
-                    }
-                    .buttonStyle(.plain)
-                    .contextMenu { Button("Delete", role: .destructive) { library.removeBookmarks([b]) } }
-                }
-                .onDelete { offsets in library.removeBookmarks(offsets.map { items[$0] }) }
-            }
-            .overlay {
-                if library.bookmarks.isEmpty {
-                    ContentUnavailableView("No bookmarks yet", systemImage: "star",
-                                           description: Text("Tap the star in the address bar to save a page."))
-                }
-            }
-            .searchable(text: $filter)
-            .navigationTitle("Bookmarks")
-            .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
-        }
-        #if os(macOS)
-        .frame(minWidth: 460, minHeight: 500)
-        #endif
-    }
-}
-
-struct HistoryView: View {
-    @ObservedObject var tabs: Tabs
-    @ObservedObject var library: Library
-    @Environment(\.dismiss) private var dismiss
-    @State private var filter = ""
-    @State private var confirmClear = false
-
-    private var items: [HistoryItem] {
-        filter.isEmpty ? library.history
-            : library.history.filter { $0.title.localizedCaseInsensitiveContains(filter) || $0.url.localizedCaseInsensitiveContains(filter) }
-    }
-
-    var body: some View {
-        NavigationStack {
-            List {
-                ForEach(items) { h in
-                    Button { tabs.page.go(h.url); dismiss() } label: {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(h.title).lineLimit(1)
-                            HStack {
-                                Text(h.url).lineLimit(1)
-                                Spacer()
-                                Text(h.visited, format: .relative(presentation: .named))
-                            }
-                            .font(.caption).foregroundStyle(.secondary)
-                        }
-                    }
-                    .buttonStyle(.plain)
-                }
-                .onDelete { offsets in library.removeHistory(offsets.map { items[$0] }) }
-            }
-            .overlay {
-                if library.history.isEmpty {
-                    ContentUnavailableView("No history", systemImage: "clock",
-                                           description: Text("Pages you visit show up here. Private tabs are never recorded."))
-                }
-            }
-            .searchable(text: $filter)
-            .navigationTitle("History")
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Clear") { confirmClear = true }.disabled(library.history.isEmpty)
-                }
-                ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } }
-            }
-            .confirmationDialog("Clear all browsing history?", isPresented: $confirmClear, titleVisibility: .visible) {
-                Button("Clear History", role: .destructive) { library.clearHistory() }
-            }
-        }
-        #if os(macOS)
-        .frame(minWidth: 520, minHeight: 500)
-        #endif
-    }
-}
-
-struct SettingsView: View {
-    @ObservedObject var settings: Settings
-    @ObservedObject var library: Library
-    @Environment(\.dismiss) private var dismiss
-    @State private var cleared = false
-
-    var body: some View {
-        NavigationStack {
-            Form {
-                Section {
-                    Picker("Search engine", selection: $settings.engine) {
-                        ForEach(SearchEngine.allCases) { Text($0.name).tag($0) }
-                    }
-                    LabeledContent("Homepage") {
-                        TextField("Start page", text: $settings.homepage)
-                            .multilineTextAlignment(.trailing)
-                            #if os(iOS)
-                            .keyboardType(.URL).textInputAutocapitalization(.never).autocorrectionDisabled()
-                            #endif
-                    }
-                    Picker("New tabs open", selection: $settings.homepage) {
-                        Text("Start page").tag("")
-                        Text("Google").tag("https://www.google.com/")
-                        if !["", "https://www.google.com/"].contains(settings.homepage) {
-                            Text("Homepage above").tag(settings.homepage)
-                        }
-                    }
-                } header: {
-                    Text("Search")
-                } footer: {
-                    Text("Leave the homepage empty and new tabs open the start page: search, reading list, bookmarks and recent pages.")
-                }
-                Section {
-                    Toggle("Block trackers and ads", isOn: $settings.blockTrackers)
-                } header: {
-                    Text("Privacy")
-                } footer: {
-                    Text("Blocks third-party requests to well-known ad and tracking hosts. Private tabs also keep no history, cookies or cache.")
-                }
-                #if os(macOS)
-                AutomationSection(settings: settings)
-                #endif
-                Section("Data") {
-                    Button("Clear History") { library.clearHistory() }.disabled(library.history.isEmpty)
-                    Button(cleared ? "Website Data Cleared" : "Clear Cookies and Website Data") {
-                        WKWebsiteDataStore.default().removeData(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes(),
-                                                                modifiedSince: .distantPast) { cleared = true }
-                    }
-                    .disabled(cleared)
-                }
-            }
-            .formStyle(.grouped)
-            .navigationTitle("Settings")
-            .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
-        }
-        #if os(macOS)
-        .frame(minWidth: 460, minHeight: 440)
-        #endif
     }
 }

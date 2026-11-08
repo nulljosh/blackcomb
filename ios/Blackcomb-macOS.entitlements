@@ -8,6 +8,8 @@
 	     com.apple.application-identifier, and automatic signing adds that itself. -->
 	<key>com.apple.security.app-sandbox</key>
 	<true/>
+	<key>com.apple.security.files.downloads.read-write</key>
+	<true/>
 	<key>com.apple.security.network.client</key>
 	<true/>
 	<!-- The local automation server (Automation.swift) listens on 127.0.0.1 only, and only when switched on in Settings. -->

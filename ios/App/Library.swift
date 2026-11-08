@@ -89,6 +89,31 @@ final class Library: ObservableObject {
         save(bookmarks, to: "bookmarks.json")
     }
 
+    // MARK: Suggestions
+
+    /// What the address bar offers as you type: your bookmarks, then your history, matching the title or
+    /// the address. A site whose name starts with what you typed comes first. Nothing leaves the device.
+    func suggestions(for query: String, limit: Int = 6) -> [Bookmark] {
+        let q = query.trimmingCharacters(in: .whitespaces).lowercased()
+        guard !q.isEmpty else { return [] }
+        func bare(_ url: String) -> String {
+            var s = url.lowercased()
+            for p in ["https://", "http://", "www."] where s.hasPrefix(p) { s.removeFirst(p.count) }
+            return s
+        }
+        var seen = Set<String>()
+        let all = bookmarks.map { ($0.title, $0.url) } + history.map { ($0.title, $0.url) }
+        let hits = all.enumerated().compactMap { i, item -> (Int, Int, Bookmark)? in
+            let (title, url) = item
+            guard seen.insert(url).inserted else { return nil }
+            let b = bare(url)
+            if b.hasPrefix(q) { return (0, i, Bookmark(title: title, url: url)) }
+            if b.contains(q) || title.lowercased().contains(q) { return (1, i, Bookmark(title: title, url: url)) }
+            return nil
+        }
+        return hits.sorted { ($0.0, $0.1) < ($1.0, $1.1) }.prefix(limit).map(\.2)
+    }
+
     // MARK: History
 
     /// Newest first. Visiting a page again moves it to the top instead of duplicating it.

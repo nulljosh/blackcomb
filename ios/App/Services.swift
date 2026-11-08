@@ -110,7 +110,7 @@ final class Services: ObservableObject {
     weak var browserWindow: NSWindow?
     #endif
     enum Sheet: String, Identifiable, Codable {
-        case bookmarks, history, settings, siteRules, reading
+        case bookmarks, history, settings, siteRules, reading, downloads
         var id: String { rawValue }
     }
 
@@ -118,6 +118,8 @@ final class Services: ObservableObject {
     @Published var openSaved: UUID?
 
     let library: Library
+    let downloads = Downloads()
+    let icons: SiteIcons
     let settings: Settings
     let blocker: ContentBlocker
     let sites: SiteRules
@@ -126,6 +128,8 @@ final class Services: ObservableObject {
     let dataStore: WKWebsiteDataStore
     @Published var sheet: Sheet?
     @Published var finding = false
+    /// Asks before the fire button closes every tab and clears history and site data.
+    @Published var confirmBurn = false
     /// True while a local agent is driving the browser (Automation.swift); the address bar shows it.
     @Published var agentActive = false
     /// Bumped by the Open Location command; the page focuses its address bar when this changes.
@@ -144,6 +148,7 @@ final class Services: ObservableObject {
         self.defaults = defaults
         self.dataStore = dataStore ?? Profile.dataStore
         self.library = Library(directory: directory)
+        self.icons = SiteIcons(directory: directory)
         self.sites = SiteRules(directory: directory)
         self.settings = settings
         self.blocker = ContentBlocker(enabled: settings.blockTrackers)

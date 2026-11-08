@@ -504,3 +504,63 @@ final class FavoritesSeedTests: XCTestCase {
         XCTAssertTrue(Services(directory: dir, defaults: defaults).library.bookmarks.isEmpty, "not seeded twice")
     }
 }
+
+final class DownloadNameTests: XCTestCase {
+    func testUniqueAndSafeNames() throws {
+        let dir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        XCTAssertEqual(Downloads.destination(for: "a.pdf", in: dir).lastPathComponent, "a.pdf")
+        FileManager.default.createFile(atPath: dir.appendingPathComponent("a.pdf").path, contents: Data())
+        XCTAssertEqual(Downloads.destination(for: "a.pdf", in: dir).lastPathComponent, "a 2.pdf")
+        XCTAssertEqual(Downloads.destination(for: "../../etc/passwd", in: dir).deletingLastPathComponent().path, dir.path)
+        XCTAssertEqual(Downloads.destination(for: ".hidden", in: dir).lastPathComponent, "hidden")
+        XCTAssertEqual(Downloads.destination(for: "", in: dir).lastPathComponent, "Download")
+    }
+}
+
+@MainActor
+final class TabKeysTests: XCTestCase {
+    func testSelectCycleAndReopen() {
+        let t = Tabs(services: makeServices())
+        t.add(""); t.add("")
+        t.select(number: 1); XCTAssertEqual(t.current, t.pages[0].id)
+        t.select(number: 9); XCTAssertEqual(t.current, t.pages[2].id)
+        t.select(number: 7); XCTAssertEqual(t.current, t.pages[2].id, "no seventh tab: stays put")
+        t.cycle(1); XCTAssertEqual(t.current, t.pages[0].id, "wraps")
+        t.cycle(-1); XCTAssertEqual(t.current, t.pages[2].id)
+        t.reopenClosed(); XCTAssertEqual(t.pages.count, 3, "nothing closed yet")
+    }
+}
+
+@MainActor
+final class SuggestionTests: XCTestCase {
+    func testPrefixFirstDedupedAndCapped() {
+        let dir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        let lib = Library(directory: dir)
+        lib.record(title: "Some news about GitHub", url: "https://news.example.com/github")
+        lib.record(title: "GitHub", url: "https://github.com/")
+        lib.toggleBookmark(title: "GitHub", url: "https://github.com/")
+        let s = lib.suggestions(for: "git")
+        XCTAssertEqual(s.first?.url, "https://github.com/", "host prefix wins")
+        XCTAssertEqual(s.count, 2, "bookmark and history copy of one address show once")
+        XCTAssertTrue(lib.suggestions(for: "  ").isEmpty)
+        for i in 0..<20 { lib.record(title: "git \(i)", url: "https://e.com/\(i)") }
+        XCTAssertEqual(lib.suggestions(for: "git").count, 6)
+    }
+}
+
+@MainActor
+final class BurnTests: XCTestCase {
+    func testBurnLeavesOneTabAndBookmarks() async {
+        let s = makeServices()
+        let t = Tabs(services: s)
+        t.add(""); t.add("")
+        s.library.record(title: "x", url: "https://x.com/")
+        let marks = s.library.bookmarks.count
+        await t.burn()
+        XCTAssertEqual(t.pages.count, 1)
+        XCTAssertTrue(s.library.history.isEmpty)
+        XCTAssertEqual(s.library.bookmarks.count, marks)
+        XCTAssertTrue(t.closed.isEmpty)
+    }
+}

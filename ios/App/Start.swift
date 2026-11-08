@@ -22,6 +22,7 @@ struct StartView: View {
     @ObservedObject var page: Page
     @ObservedObject var services: Services
     @ObservedObject private var library: Library
+    @ObservedObject private var icons: SiteIcons
 
     private let tileColumns = [GridItem(.adaptive(minimum: 88, maximum: 104), spacing: 16, alignment: .top)]
     private let cardColumns = [GridItem(.adaptive(minimum: 200), spacing: 16, alignment: .top)]
@@ -30,6 +31,7 @@ struct StartView: View {
         self.page = page
         self.services = services
         _library = ObservedObject(wrappedValue: services.library)
+        _icons = ObservedObject(wrappedValue: services.icons)
     }
 
     /// One tile per site, newest first.
@@ -61,7 +63,7 @@ struct StartView: View {
                     section("Favorites") {
                         LazyVGrid(columns: tileColumns, spacing: 16) {
                             ForEach(library.bookmarks.prefix(12)) { b in
-                                Tile(title: b.title, address: b.url) { page.go(b.url) }
+                                Tile(title: b.title, address: b.url, icon: services.icons.icon(for: b.url)) { page.go(b.url) }
                             }
                         }
                     }
@@ -70,7 +72,7 @@ struct StartView: View {
                     section("Recent") {
                         LazyVGrid(columns: tileColumns, spacing: 16) {
                             ForEach(recent) { h in
-                                Tile(title: siteName(h.url), address: h.url) { page.go(h.url) }
+                                Tile(title: siteName(h.url), address: h.url, icon: services.icons.icon(for: h.url)) { page.go(h.url) }
                             }
                         }
                     }
@@ -129,11 +131,11 @@ struct StartView: View {
     }
 }
 
-/// A site as a rounded square with its first letter, like a favorite on Safari's start page.
-/// Drawn on the device: no site is contacted to fetch an icon.
+/// A site as a rounded square: its own icon once you have visited it, else its first letter.
 private struct Tile: View {
     let title: String
     let address: String
+    let icon: Image?
     let action: () -> Void
 
     private var letter: String {
@@ -144,8 +146,12 @@ private struct Tile: View {
         Button(action: action) {
             VStack(spacing: 8) {
                 ZStack {
-                    RoundedRectangle(cornerRadius: 14, style: .continuous).fill(Color.accentColor.opacity(0.14))
-                    Text(letter).font(.system(size: 26, weight: .semibold)).foregroundStyle(Color.accentColor)
+                    RoundedRectangle(cornerRadius: 14, style: .continuous).fill(icon == nil ? Color.accentColor.opacity(0.14) : Color.white)
+                    if let icon {
+                        icon.resizable().interpolation(.high).aspectRatio(contentMode: .fit).frame(width: 36, height: 36)
+                    } else {
+                        Text(letter).font(.system(size: 26, weight: .semibold)).foregroundStyle(Color.accentColor)
+                    }
                 }
                 .frame(width: 60, height: 60)
                 Text(title).font(.caption).lineLimit(1).frame(maxWidth: 88)

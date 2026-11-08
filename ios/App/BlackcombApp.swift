@@ -33,11 +33,14 @@ struct BlackcombApp: App {
         .defaultSize(width: 1100, height: 760)
         // The address bar sits in the title bar row beside the window buttons, like Safari's compact tabs.
         .windowStyle(.hiddenTitleBar)
+        .windowBackgroundDragBehavior(.enabled)
         #endif
         .commands {
             CommandGroup(replacing: .newItem) {
                 Button("New Tab") { tabs.add() }.keyboardShortcut("t")
                 Button("New Private Tab") { tabs.add(isPrivate: true) }.keyboardShortcut("n", modifiers: [.command, .shift])
+                Button("Reopen Closed Tab") { tabs.reopenClosed() }.keyboardShortcut("t", modifiers: [.command, .shift])
+                    .disabled(tabs.closed.isEmpty)
                 #if os(macOS)
                 // Command-W closes the front window unless that is the browser with tabs to spare.
                 Button("Close") {
@@ -48,6 +51,19 @@ struct BlackcombApp: App {
                 #else
                 Button("Close Tab") { tabs.close(tabs.page) }.keyboardShortcut("w").disabled(tabs.pages.count == 1)
                 #endif
+            }
+            CommandGroup(after: .toolbar) {
+                Button("Zoom In") { tabs.page.zoom(by: 0.1) }.keyboardShortcut("=")
+                Button("Zoom Out") { tabs.page.zoom(by: -0.1) }.keyboardShortcut("-")
+                Button("Actual Size") { tabs.page.zoom(by: nil) }.keyboardShortcut("0")
+                Divider()
+                Button("Show Next Tab") { tabs.cycle(1) }.keyboardShortcut(.tab, modifiers: .control)
+                Button("Show Previous Tab") { tabs.cycle(-1) }.keyboardShortcut(.tab, modifiers: [.control, .shift])
+                ForEach(1..<10) { n in
+                    Button(n == 9 ? "Show Last Tab" : "Show Tab \(n)") { tabs.select(number: n) }
+                        .keyboardShortcut(KeyEquivalent(Character(String(n))))
+                }
+                Divider()
             }
             #if os(macOS)
             CommandGroup(after: .toolbar) {
@@ -90,6 +106,9 @@ struct BlackcombApp: App {
             CommandMenu("History") {
                 Button("Show History") { services.sheet = .history }.keyboardShortcut("y")
                 Button("Clear History") { services.library.clearHistory() }
+                Button("Close Tabs and Clear Data…") { services.confirmBurn = true }.keyboardShortcut(.delete, modifiers: [.command, .shift])
+                Divider()
+                Button("Show Downloads") { services.sheet = .downloads }.keyboardShortcut("l", modifiers: [.command, .option])
             }
             CommandGroup(replacing: .appSettings) {
                 Button("Settings…") { services.sheet = .settings }.keyboardShortcut(",")
