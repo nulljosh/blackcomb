@@ -132,6 +132,8 @@ final class Services: ObservableObject {
     @Published var confirmBurn = false
     /// Bumped by Translate Page; the page in front translates itself on the device.
     @Published var translateTick = 0
+    /// Asks for a name before a new tab group opens.
+    @Published var namingGroup = false
     /// True while a local agent is driving the browser (Automation.swift); the address bar shows it.
     @Published var agentActive = false
     /// Bumped by the Open Location command; the page focuses its address bar when this changes.

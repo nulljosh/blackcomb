@@ -17,7 +17,7 @@ Compared against App Store screens of Safari, Chrome, Edge, Firefox, Brave, Duck
 | 6 | Automatic HTTPS upgrade | Orion, DuckDuckGo, Brave | S | done (next build) |
 | 7 | Tab overview grid with search (iPhone and iPad; Shift-Cmd-Backslash on Mac) | Safari, Chrome, Orion, Edge | L | done (next build) |
 | 8 | Translate the page on device (Translation framework; Control-Cmd-T) | Chrome, Safari, Edge | L | done (next build); a long page takes ~30 s, translate visible text first if that bothers anyone |
-| 9 | Tab groups | Safari, Orion | L | todo |
+| 9 | Tab groups (... menu, Tab Groups) | Safari, Orion | L | done (next build) |
 | - | Unified title bar, tab close buttons, default Favorites, blue icon in dark mode | Safari | S | done (bd2fe27 and next) |
 
 ## Ingested 2026-10-30

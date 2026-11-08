@@ -221,6 +221,13 @@ final class Page: NSObject, ObservableObject, Identifiable, WKNavigationDelegate
     }
 }
 
+/// A named set of tabs you can switch to, like Safari's tab groups. Only addresses are kept.
+struct TabGroup: Codable, Identifiable, Equatable {
+    var id = UUID()
+    var name: String
+    var urls: [String] = []
+}
+
 /// The open tabs. Normal tabs are restored on the next launch; private tabs never are.
 @MainActor
 final class Tabs: ObservableObject {
@@ -233,6 +240,10 @@ final class Tabs: ObservableObject {
     static let restoreKey = "tabs.urls"
     /// Addresses of recently closed tabs, newest last, for Reopen Closed Tab. Private tabs are never kept.
     @Published private(set) var closed: [String] = []
+    @Published private(set) var groups: [TabGroup] = []
+    /// The group on screen; nil is the main set of tabs.
+    @Published private(set) var activeGroup: UUID?
+    private var mainURLs: [String] = []
 
     init(services: Services = .shared, restore: Bool = false, defaults: UserDefaults = .standard) {
         self.services = services
@@ -244,6 +255,12 @@ final class Tabs: ObservableObject {
         if start.isEmpty { start = [Page(services: services)] }
         pages = start
         current = start[0].id
+        if restore {
+            groups = defaults.data(forKey: "tabs.groups").flatMap { try? JSONDecoder().decode([TabGroup].self, from: $0) } ?? []
+            mainURLs = defaults.stringArray(forKey: "tabs.main") ?? []
+            activeGroup = defaults.string(forKey: "tabs.active").flatMap(UUID.init(uuidString:))
+            if let a = activeGroup, !groups.contains(where: { $0.id == a }) { activeGroup = nil }
+        }
         for p in start { wire(p) }
     }
 
@@ -288,6 +305,36 @@ final class Tabs: ObservableObject {
         await services.dataStore.removeData(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes(), modifiedSince: .distantPast)
     }
 
+    var activeGroupName: String? { activeGroup.flatMap { a in groups.first { $0.id == a }?.name } }
+
+    /// Puts the tabs on screen away in their group and brings out the other group's tabs.
+    func switchGroup(to id: UUID?) {
+        guard id != activeGroup else { return }
+        let urls = pages.filter { !$0.isPrivate }.compactMap { $0.web.url?.absoluteString }
+        if let a = activeGroup, let i = groups.firstIndex(where: { $0.id == a }) { groups[i].urls = urls } else { mainURLs = urls }
+        activeGroup = id
+        let next = id.flatMap { g in groups.first { $0.id == g }?.urls } ?? mainURLs
+        let fresh = next.isEmpty ? [Page(services: services)] : next.map { Page($0, services: services) }
+        for p in fresh { wire(p) }
+        pages = fresh
+        current = fresh[0].id
+        closed = []
+        save()
+    }
+
+    func newGroup(named name: String) {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        let group = TabGroup(name: trimmed.isEmpty ? "Group \(groups.count + 1)" : String(trimmed.prefix(40)))
+        groups.append(group)
+        switchGroup(to: group.id)
+    }
+
+    func deleteGroup(_ id: UUID) {
+        if activeGroup == id { switchGroup(to: nil) }
+        groups.removeAll { $0.id == id }
+        save()
+    }
+
     func reopenClosed() {
         guard let url = closed.popLast() else { return }
         add(url)
@@ -330,6 +377,9 @@ final class Tabs: ObservableObject {
         guard let defaults else { return }
         let urls = pages.filter { !$0.isPrivate }.compactMap { $0.web.url?.absoluteString }
         defaults.set(urls, forKey: Tabs.restoreKey)
+        defaults.set(try? JSONEncoder().encode(groups), forKey: "tabs.groups")
+        defaults.set(mainURLs, forKey: "tabs.main")
+        defaults.set(activeGroup?.uuidString, forKey: "tabs.active")
     }
 }
 

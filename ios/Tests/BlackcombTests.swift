@@ -566,3 +566,23 @@ final class BurnTests: XCTestCase {
         XCTAssertTrue(t.closed.isEmpty)
     }
 }
+
+@MainActor
+final class TabGroupTests: XCTestCase {
+    func testNewSwitchDelete() {
+        let defaults = UserDefaults(suiteName: UUID().uuidString)!
+        let t = Tabs(services: makeServices(), restore: true, defaults: defaults)
+        t.add(""); XCTAssertEqual(t.pages.count, 2)
+        t.newGroup(named: "  Work  ")
+        XCTAssertEqual(t.activeGroupName, "Work")
+        XCTAssertEqual(t.pages.count, 1, "a new group starts with one tab")
+        t.newGroup(named: "")
+        XCTAssertEqual(t.activeGroupName, "Group 2")
+        let again = Tabs(services: makeServices(), restore: true, defaults: defaults)
+        XCTAssertEqual(again.groups.map(\.name), ["Work", "Group 2"], "groups survive a relaunch")
+        XCTAssertEqual(again.activeGroupName, "Group 2")
+        t.deleteGroup(t.activeGroup!)
+        XCTAssertNil(t.activeGroup)
+        XCTAssertEqual(t.groups.map(\.name), ["Work"])
+    }
+}

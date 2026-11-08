@@ -122,6 +122,7 @@ struct PageView: View {
         }
         .navigationTitle(page.title)
         .modifier(TranslateRunner(page: page, services: services))
+        .modifier(NameGroupPrompt(tabs: tabs, services: services))
         .confirmationDialog("Close every tab and clear history, cookies and site data?", isPresented: $services.confirmBurn,
                             titleVisibility: .visible) {
             Button("Close Tabs and Clear Data", role: .destructive) { Task { await tabs.burn() } }
@@ -205,6 +206,7 @@ struct PageView: View {
         Menu {
             Button { tabs.add() } label: { Label("New Tab", systemImage: "plus") }
             Button { tabs.add(isPrivate: true) } label: { Label("New Private Tab", systemImage: "eyeglasses") }
+            TabGroupsMenu(tabs: tabs, services: services)
             Button { tabs.close(page) } label: { Label("Close Tab", systemImage: "xmark.square") }
                 .disabled(tabs.pages.count == 1)
             Divider()
