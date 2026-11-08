@@ -9,11 +9,11 @@ Compared against App Store screens of Safari, Chrome, Edge, Firefox, Brave, Duck
 
 | # | Gap | Who has it | Size | Status |
 |---|-----|-----------|------|--------|
-| 1 | Downloads: save files (Mac ~/Downloads, iOS Files), a Downloads list | all ten | M | todo |
-| 2 | Address bar suggestions from your own history and bookmarks as you type | Safari, Chrome, Edge, Firefox, Orion | M | todo |
-| 3 | Keyboard: reopen closed tab (Shift-Cmd-T), Cmd-1..9 tabs, Cmd +/- zoom, Ctrl-Tab | Safari, Chrome, Orion (Mac) | S | todo |
-| 4 | Site icons on Favorites tiles and tabs, fetched from the site itself and kept on the device | Safari, Chrome, Orion, DDG | M | todo |
-| 5 | Fire button: close every tab and clear site data in one step | DuckDuckGo, Brave | S | todo |
+| 1 | Downloads: save files (Mac ~/Downloads, iOS Files), a Downloads list | all ten | M | done in 1.1.0 |
+| 2 | Address bar suggestions from your own history and bookmarks as you type | Safari, Chrome, Edge, Firefox, Orion | M | done in 1.1.0 |
+| 3 | Keyboard: reopen closed tab (Shift-Cmd-T), Cmd-1..9 tabs, Cmd +/- zoom, Ctrl-Tab | Safari, Chrome, Orion (Mac) | S | done in 1.1.0 |
+| 4 | Site icons on Favorites tiles and tabs, fetched from the site itself and kept on the device | Safari, Chrome, Orion, DDG | M | done in 1.1.0 |
+| 5 | Fire button: close every tab and clear site data in one step | DuckDuckGo, Brave | S | done in 1.1.0 |
 | 6 | Automatic HTTPS upgrade | Orion, DuckDuckGo, Brave | S | todo |
 | 7 | Tab overview grid with search (iPhone and iPad) | Safari, Chrome, Orion, Edge | L | todo |
 | 8 | Translate the page on device (Translation framework) | Chrome, Safari, Edge | L | todo |
