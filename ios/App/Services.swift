@@ -110,7 +110,7 @@ final class Services: ObservableObject {
     weak var browserWindow: NSWindow?
     #endif
     enum Sheet: String, Identifiable, Codable {
-        case bookmarks, history, settings, siteRules, reading, downloads
+        case bookmarks, history, settings, siteRules, reading, downloads, tabs
         var id: String { rawValue }
     }
 

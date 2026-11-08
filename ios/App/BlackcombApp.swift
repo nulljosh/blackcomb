@@ -57,6 +57,7 @@ struct BlackcombApp: App {
                 Button("Zoom Out") { tabs.page.zoom(by: -0.1) }.keyboardShortcut("-")
                 Button("Actual Size") { tabs.page.zoom(by: nil) }.keyboardShortcut("0")
                 Divider()
+                Button("Show All Tabs") { services.sheet = .tabs }.keyboardShortcut("\\", modifiers: [.command, .shift])
                 Button("Show Next Tab") { tabs.cycle(1) }.keyboardShortcut(.tab, modifiers: .control)
                 Button("Show Previous Tab") { tabs.cycle(-1) }.keyboardShortcut(.tab, modifiers: [.control, .shift])
                 ForEach(1..<10) { n in

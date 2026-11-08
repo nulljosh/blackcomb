@@ -65,6 +65,7 @@ struct PanelView: View {
         case .siteRules: SiteRulesView(page: tabs.page, sites: services.sites)
         case .reading: ReadingListView(tabs: tabs, services: services)
         case .downloads: DownloadsView(downloads: services.downloads)
+        case .tabs: TabGrid(tabs: tabs)
         }
     }
 }
@@ -159,6 +160,10 @@ struct PageView: View {
             .disabled(page.address.isEmpty)
             .accessibilityLabel(bookmarked ? "Remove bookmark" : "Add bookmark")
             DownloadsButton(downloads: services.downloads) { services.sheet = .downloads }
+            #if os(iOS)
+            Button { services.sheet = .tabs } label: { Image(systemName: "square.on.square") }
+                .accessibilityLabel("Show all tabs, \(tabs.pages.count) open")
+            #endif
             menu
         }
         .buttonStyle(.borderless)
