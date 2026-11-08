@@ -83,6 +83,7 @@ struct BlackcombApp: App {
             #endif
             CommandGroup(after: .textEditing) {
                 Button("Find in Page") { services.finding = true }.keyboardShortcut("f")
+                Button("Translate Page") { services.translateTick += 1 }.keyboardShortcut("t", modifiers: [.command, .control])
                 Button("Open Location") { services.addressFocusTick += 1 }.keyboardShortcut("l")
             }
             CommandMenu("Site") {

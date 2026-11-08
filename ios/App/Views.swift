@@ -121,6 +121,7 @@ struct PageView: View {
             }
         }
         .navigationTitle(page.title)
+        .modifier(TranslateRunner(page: page, services: services))
         .confirmationDialog("Close every tab and clear history, cookies and site data?", isPresented: $services.confirmBurn,
                             titleVisibility: .visible) {
             Button("Close Tabs and Clear Data", role: .destructive) { Task { await tabs.burn() } }
@@ -208,6 +209,8 @@ struct PageView: View {
                 .disabled(tabs.pages.count == 1)
             Divider()
             Button { services.finding = true } label: { Label("Find in Page", systemImage: "magnifyingglass") }
+            Button { services.translateTick += 1 } label: { Label("Translate Page", systemImage: "translate") }
+                .disabled(page.web.url == nil)
             Button { services.saveForLater(page) } label: {
                 Label(library.isSaved(page.address) ? "Saved for Later" : "Save for Later", systemImage: "text.book.closed")
             }
