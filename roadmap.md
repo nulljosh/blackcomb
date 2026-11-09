@@ -25,4 +25,3 @@ Compared against App Store screens of Safari, Chrome, Edge, Firefox, Brave, Duck
 ## Ingested 2026-11-03
 
 ## Ingested 2026-11-06
-- [ ] Needs better icon.
