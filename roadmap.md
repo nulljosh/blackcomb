@@ -32,4 +32,4 @@ Compared against App Store screens of Safari, Chrome, Edge, Firefox, Brave, Duck
 - [ ] Needs top bar to be able to drag the window around.
 
 ## Ingested 2026-11-14
-- [ ] (Note "Black comb") Landing hero background is all tiles and no cohesiveness. Joshua thinks a skill already fixed one project this way; unverified which. Plank's landing recipe is the bar.
+- [x] (Note "Black comb") Landing hero background is all tiles and no cohesiveness. Joshua thinks a skill already fixed one project this way; unverified which. Plank's landing recipe is the bar.

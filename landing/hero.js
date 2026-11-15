@@ -1,9 +1,9 @@
-// Hero wall: Blackcomb at work. Each card types an address into the browser's bar, loads the page, then lands one
-// real feature, a different one per card: tracker blocking, reading list, read aloud, private tab, find in page.
+// Hero: one full-bleed Blackcomb tab behind the copy. It types an address into the bar, loads the page, then lands one
+// real feature, a different one each visit: tracker blocking, reading list, read aloud, private tab, find in page.
 document.addEventListener('DOMContentLoaded', function () {
   var wall = document.getElementById('bwall'); if (!wall) return;
   var still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var n = innerWidth <= 560 ? 4 : innerWidth <= 900 ? 6 : 9;
+  var n = 1;
   var LOCK = '<svg viewBox="0 0 12 12"><path d="M3 5V4a3 3 0 0 1 6 0v1h.5a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-5a.5.5 0 0 1 .5-.5zm1.5 0h3V4a1.5 1.5 0 0 0-3 0z"/></svg>';
   var SITES = [
     ['en.wikipedia.org/wiki/Blackcomb_Peak', 'Blackcomb Peak', 'Wikipedia', '12 trackers blocked'],
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
       var priv = s[0] === 'private tab';
       a.className = 'bk'; bar.className = 'bk-bar' + (priv ? ' priv' : ''); bar.innerHTML = priv ? '' : LOCK;
       var url = bar.appendChild(el('span')); load.className = 'bk-load'; load.style.transform = 'scaleX(0)';
-      pg.textContent = ''; pg.appendChild(el('b', '', s[1])); pg.appendChild(el('span', '', s[2])); for (var j = 0; j < 3; j++) pg.appendChild(el('i'));
+      pg.textContent = ''; pg.appendChild(el('b', '', s[1])); pg.appendChild(el('span', '', s[2])); for (var j = 0; j < 12; j++) pg.appendChild(el('i'));
       pill.textContent = s[3];
       var text = priv ? 'Private' : s[0];
       if (still || first) { url.textContent = text; load.className = 'bk-load done'; a.className = 'bk loaded done'; return wait(first ? 2600 + i * 400 : 0); }

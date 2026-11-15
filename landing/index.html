@@ -69,8 +69,8 @@ footer>*{position:relative;z-index:1}
 @media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}.hint{animation:none}.layer,.sun,.copy{transform:none!important}}
 </style>
 <link rel="stylesheet" href="sections.css">
-<link rel="stylesheet" href="hero.css?v=2">
-<script src="hero.js?v=2" defer></script>
+<link rel="stylesheet" href="hero.css?v=3">
+<script src="hero.js?v=3" defer></script>
 </head>
 <body id="top">
 <header class="hero" id="hero">
@@ -116,7 +116,7 @@ footer>*{position:relative;z-index:1}
   </svg>
 </footer>
 <script>
-// Hero parallax: the wall drifts at 0.45, the copy lifts at 0.2 and fades (hero.js fills the wall). Off under reduced motion.
+// Hero parallax: the product layer drifts at 0.45, the copy lifts at 0.2 and fades (hero.js fills it). Off under reduced motion.
 const rm=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const copy=document.getElementById('copy'),hero=document.getElementById('hero'),bg=hero.querySelector('.hero-bg');let tick=0;
 function frame(){tick=0;const y=scrollY,h=hero.offsetHeight;if(y>h*1.2)return;bg.style.setProperty('--py',(y*.45)+'px');
