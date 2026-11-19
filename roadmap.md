@@ -32,3 +32,6 @@ Compared against App Store screens of Safari, Chrome, Edge, Firefox, Brave, Duck
 - [ ] Needs top bar to be able to drag the window around.
 
 ## Ingested 2026-11-14
+
+## Ingested 2026-11-18
+- [ ] Vertical tabs and favourites.
