@@ -150,7 +150,7 @@ private struct Tile: View {
                     if let icon {
                         icon.resizable().interpolation(.high).aspectRatio(contentMode: .fit).frame(width: 36, height: 36)
                     } else {
-                        Text(letter).font(.system(size: 26, weight: .semibold)).foregroundStyle(Color.accentColor)
+                        Text(letter).font(.system(.title, weight: .semibold)).foregroundStyle(Color.accentColor)
                     }
                 }
                 .frame(width: 60, height: 60)
