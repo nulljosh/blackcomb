@@ -228,7 +228,7 @@ struct TabGroup: Codable, Identifiable, Equatable {
     var urls: [String] = []
 }
 
-/// The open tabs. Normal tabs are restored on the next launch; private tabs never are.
+/// The open tabs. A launch starts on the start page; only tab groups are kept between launches.
 @MainActor
 final class Tabs: ObservableObject {
     @Published var pages: [Page]
@@ -237,7 +237,6 @@ final class Tabs: ObservableObject {
     @Published var pair: PairModel?
     private let services: Services
     private let defaults: UserDefaults?
-    static let restoreKey = "tabs.urls"
     /// Addresses of recently closed tabs, newest last, for Reopen Closed Tab. Private tabs are never kept.
     @Published private(set) var closed: [String] = []
     @Published private(set) var groups: [TabGroup] = []
@@ -248,18 +247,12 @@ final class Tabs: ObservableObject {
     init(services: Services = .shared, restore: Bool = false, defaults: UserDefaults = .standard) {
         self.services = services
         self.defaults = restore ? defaults : nil
-        var start: [Page] = []
-        if restore, let saved = defaults.stringArray(forKey: Tabs.restoreKey), !saved.isEmpty {
-            start = saved.map { Page($0, services: services) }
-        }
-        if start.isEmpty { start = [Page(services: services)] }
+        let start = [Page(services: services)]
         pages = start
         current = start[0].id
+        // ponytail: groups keep the tabs they held when last switched away from; the tabs on screen are not kept.
         if restore {
             groups = defaults.data(forKey: "tabs.groups").flatMap { try? JSONDecoder().decode([TabGroup].self, from: $0) } ?? []
-            mainURLs = defaults.stringArray(forKey: "tabs.main") ?? []
-            activeGroup = defaults.string(forKey: "tabs.active").flatMap(UUID.init(uuidString:))
-            if let a = activeGroup, !groups.contains(where: { $0.id == a }) { activeGroup = nil }
         }
         for p in start { wire(p) }
     }
@@ -375,11 +368,7 @@ final class Tabs: ObservableObject {
 
     private func save() {
         guard let defaults else { return }
-        let urls = pages.filter { !$0.isPrivate }.compactMap { $0.web.url?.absoluteString }
-        defaults.set(urls, forKey: Tabs.restoreKey)
         defaults.set(try? JSONEncoder().encode(groups), forKey: "tabs.groups")
-        defaults.set(mainURLs, forKey: "tabs.main")
-        defaults.set(activeGroup?.uuidString, forKey: "tabs.active")
     }
 }
 

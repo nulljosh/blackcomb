@@ -5,7 +5,7 @@ v1.1.0, WebKit browser. Named after the mountain above Whistler (Blackcomb, 2026
 ## Files
 
 - `ios/App/BlackcombApp.swift`: app entry and the menu commands (New Tab, Private Tab, Find, Bookmarks, History, Settings).
-- `ios/App/Browser.swift`: `resolve()` (input to URL, uses the chosen `SearchEngine`), `Page` (one `WKWebView` + navigation/UI delegate; opens `target=_blank` links as tabs, hands mailto:/tel: to the system), `Tabs` (open tabs, restored at launch, private tabs never restored).
+- `ios/App/Browser.swift`: `resolve()` (input to URL, uses the chosen `SearchEngine`), `Page` (one `WKWebView` + navigation/UI delegate; opens `target=_blank` links as tabs, hands mailto:/tel: to the system), `Tabs` (open tabs; a launch starts on the start page, only tab groups are kept between launches).
 - `ios/App/Library.swift`: bookmarks and history as two JSON files in Application Support (history capped at 500, newest first, repeat visits move to the top).
 - `ios/App/Services.swift`: `Settings` (engine, homepage, tracker blocking), `ContentBlocker` (WebKit content rule list of ad and tracking hosts), `Services` (shared state and the open sheet).
 - `ios/App/Views.swift`: browser chrome, address suggestions, tab strip, find bar. `ios/App/Panels.swift`: Bookmarks, History and Settings. `ios/App/Downloads.swift`: WKDownload delegate, Downloads list. `ios/App/Icons.swift`: site icons learned from visited pages, kept on device. `ios/App/TabGrid.swift`: tab overview. `ios/App/Translate.swift`: Translate Page on device (Translation framework, text nodes in the defaultClient world).

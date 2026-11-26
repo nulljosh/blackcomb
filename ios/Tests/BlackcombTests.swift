@@ -36,12 +36,12 @@ final class TabsTests: XCTestCase {
     }
     func testNeverClosesLast() { let t = Tabs(services: makeServices()); t.close(t.pages[0]); XCTAssertEqual(t.pages.count, 1) }
 
-    func testRestoresSavedTabs() {
+    func testLaunchStartsOnStartPage() {
         let defaults = UserDefaults(suiteName: UUID().uuidString)!
-        defaults.set(["https://a.example", "https://b.example"], forKey: Tabs.restoreKey)
+        defaults.set(["https://a.example", "https://b.example"], forKey: "tabs.urls")
         let t = Tabs(services: makeServices(), restore: true, defaults: defaults)
-        XCTAssertEqual(t.pages.count, 2)
-        XCTAssertEqual(t.current, t.pages[0].id)
+        XCTAssertEqual(t.pages.count, 1)
+        XCTAssertNil(t.page.web.url, "old tabs are not reopened")
     }
 
     func testPrivateTabUsesNonPersistentStore() {
@@ -580,7 +580,7 @@ final class TabGroupTests: XCTestCase {
         XCTAssertEqual(t.activeGroupName, "Group 2")
         let again = Tabs(services: makeServices(), restore: true, defaults: defaults)
         XCTAssertEqual(again.groups.map(\.name), ["Work", "Group 2"], "groups survive a relaunch")
-        XCTAssertEqual(again.activeGroupName, "Group 2")
+        XCTAssertNil(again.activeGroup, "a launch starts on the main tab, not inside a group")
         t.deleteGroup(t.activeGroup!)
         XCTAssertNil(t.activeGroup)
         XCTAssertEqual(t.groups.map(\.name), ["Work"])
