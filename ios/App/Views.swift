@@ -11,6 +11,8 @@ struct BrowserView: View {
     @State private var booted = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
+    private var showWelcome: Bool { !hasSeenWelcome && Profile.name == nil }
+
     var body: some View {
         ZStack {
         Group {
@@ -28,7 +30,10 @@ struct BrowserView: View {
         }
         .opacity(booted ? 1 : 0)
         .scaleEffect(booted || reduceMotion ? 1 : 0.97)
-        if !hasSeenWelcome, Profile.name == nil {
+        // The welcome only covers the browser, so also take it out of focus, keyboard and VoiceOver reach.
+        .disabled(showWelcome)
+        .accessibilityHidden(showWelcome)
+        if showWelcome {
             WelcomeView { withAnimation { hasSeenWelcome = true } }.transition(.opacity)
         }
         }

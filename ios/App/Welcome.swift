@@ -38,6 +38,7 @@ struct WelcomeView: View {
         .frame(maxWidth: 480)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.background)
+        .accessibilityAddTraits(.isModal)
     }
 
     private func row(_ symbol: String, _ title: String, _ body: String) -> some View {
