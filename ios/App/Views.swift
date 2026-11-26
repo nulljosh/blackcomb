@@ -7,8 +7,12 @@ struct BrowserView: View {
     #if os(macOS)
     @Environment(\.openWindow) private var openWindow
     #endif
+    @AppStorage("hasSeenWelcome") private var hasSeenWelcome = false
+    @State private var booted = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
+        ZStack {
         Group {
             #if os(iOS)
             if let pair = tabs.pair {
@@ -22,7 +26,16 @@ struct BrowserView: View {
                 .ignoresSafeArea(.container, edges: .top)
             #endif
         }
-        .onAppear { drain() }
+        .opacity(booted ? 1 : 0)
+        .scaleEffect(booted || reduceMotion ? 1 : 0.97)
+        if !hasSeenWelcome, Profile.name == nil {
+            WelcomeView { withAnimation { hasSeenWelcome = true } }.transition(.opacity)
+        }
+        }
+        .onAppear {
+            drain()
+            withAnimation(reduceMotion ? nil : .easeOut(duration: 0.5)) { booted = true }
+        }
         .onChange(of: services.incoming) { _, _ in drain() }
         #if os(iOS)
         .sheet(item: $services.sheet) { PanelView(sheet: $0, tabs: tabs, services: services) }
