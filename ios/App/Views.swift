@@ -28,8 +28,6 @@ struct BrowserView: View {
                 .ignoresSafeArea(.container, edges: .top)
             #endif
         }
-        .opacity(booted ? 1 : 0)
-        .scaleEffect(booted || reduceMotion ? 1 : 0.97)
         // The welcome only covers the browser, so also take it out of focus, keyboard and VoiceOver reach.
         .disabled(showWelcome)
         .accessibilityHidden(showWelcome)
@@ -37,6 +35,9 @@ struct BrowserView: View {
             WelcomeView { withAnimation { hasSeenWelcome = true } }.transition(.opacity)
         }
         }
+        // Fades the whole window in, welcome included, so the first launch animates too.
+        .opacity(booted ? 1 : 0)
+        .scaleEffect(booted || reduceMotion ? 1 : 0.97)
         .onAppear {
             drain()
             withAnimation(reduceMotion ? nil : .easeOut(duration: 0.5)) { booted = true }
