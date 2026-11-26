@@ -5,8 +5,8 @@ struct WelcomeView: View {
     let done: () -> Void
 
     #if os(macOS)
-    private let clearHow = "History menu, then Close Tabs and Clear Data. Shift-Command-Delete does it fast."
-    private let windowsHow = "Shift-Command-Backslash shows every tab. The Window menu lists every open window."
+    private let clearHow = "Press ⇧⌘⌫ to close every tab and clear history, or use the History menu."
+    private let windowsHow = "Press ⇧⌘\\ to see every tab. The Window menu lists every open window."
     #else
     private let clearHow = "Tap the menu, then Close Tabs and Clear Data. History has its own Clear button."
     private let windowsHow = "Tap the tab count to see every open tab, group them, or close the ones you are done with."
