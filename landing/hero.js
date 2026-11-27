@@ -38,3 +38,25 @@ document.addEventListener('DOMContentLoaded', function () {
     if (still) play(); else play(true).then(function loop() { return play().then(loop); });
   })(i);
 });
+
+// Snow: if it is snowing at Whistler right now (Open-Meteo, no key), let it fall over the hero and say so. Nothing otherwise.
+(function () {
+  var hero = document.getElementById('hero'); if (!hero) return;
+  fetch('https://api.open-meteo.com/v1/forecast?latitude=50.1163&longitude=-122.9574&current=temperature_2m,weather_code')
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      var c = d.current, snow = [71, 73, 75, 77, 85, 86].indexOf(c.weather_code) > -1;
+      if (!snow) return;
+      var note = document.createElement('p'); note.className = 'snow-note';
+      note.textContent = 'Snowing in Whistler now, ' + Math.round(c.temperature_2m) + '°C';
+      hero.querySelector('.copy').appendChild(note);
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var box = document.createElement('div'); box.className = 'snowfall'; box.setAttribute('aria-hidden', 'true');
+      for (var i = 0; i < 60; i++) {
+        var f = document.createElement('i');
+        f.style.cssText = 'left:' + Math.random() * 100 + '%;width:' + (3 + Math.random() * 4) + 'px;height:' + (3 + Math.random() * 4) + 'px;animation-duration:' + (6 + Math.random() * 8) + 's;animation-delay:-' + Math.random() * 12 + 's';
+        box.appendChild(f);
+      }
+      hero.appendChild(box);
+    }).catch(function () {});
+})();
