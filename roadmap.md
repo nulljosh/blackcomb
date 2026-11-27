@@ -3,6 +3,8 @@
 ## Next
 - [ ] Share extension: send a link from Safari to a Blackcomb tab or the second Pair pane. Dropped from 1.0.0 because it needs an app group and a signed extension target.
 - [ ] kmp/ port for Android/Windows/Linux (see native fleet rollout)
+- [ ] App Store preview video: record the app on an iPhone simulator at device size, then cut it for the listing.
+- [ ] Submit 1.2.0 for review (iOS and Mac). Needs Joshua's yes; the Mac build carries Automation (network.server entitlement, off by default).
 
 ## Gap matrix (mobbin pass 2026-11-07)
 Compared against App Store screens of Safari, Chrome, Edge, Firefox, Brave, DuckDuckGo, Orion, Arc Search, Opera, Aloha. One row per minor version, daily use first. Skipped on purpose: sync, VPN, AI chat, extensions, password manager, ads.
@@ -14,10 +16,10 @@ Compared against App Store screens of Safari, Chrome, Edge, Firefox, Brave, Duck
 | 3 | Keyboard: reopen closed tab (Shift-Cmd-T), Cmd-1..9 tabs, Cmd +/- zoom, Ctrl-Tab | Safari, Chrome, Orion (Mac) | S | done in 1.1.0 |
 | 4 | Site icons on Favorites tiles and tabs, fetched from the site itself and kept on the device | Safari, Chrome, Orion, DDG | M | done in 1.1.0 |
 | 5 | Fire button: close every tab and clear site data in one step | DuckDuckGo, Brave | S | done in 1.1.0 |
-| 6 | Automatic HTTPS upgrade | Orion, DuckDuckGo, Brave | S | done (next build) |
-| 7 | Tab overview grid with search (iPhone and iPad; Shift-Cmd-Backslash on Mac) | Safari, Chrome, Orion, Edge | L | done (next build) |
-| 8 | Translate the page on device (Translation framework; Control-Cmd-T) | Chrome, Safari, Edge | L | done (next build); a long page takes ~30 s, translate visible text first if that bothers anyone |
-| 9 | Tab groups (... menu, Tab Groups) | Safari, Orion | L | done (next build) |
+| 6 | Automatic HTTPS upgrade | Orion, DuckDuckGo, Brave | S | done in 1.2.0 |
+| 7 | Tab overview grid with search (iPhone and iPad; Shift-Cmd-Backslash on Mac) | Safari, Chrome, Orion, Edge | L | done in 1.2.0 |
+| 8 | Translate the page on device (Translation framework; Control-Cmd-T) | Chrome, Safari, Edge | L | done in 1.2.0; a long page takes ~30 s, translate visible text first if that bothers anyone |
+| 9 | Tab groups (... menu, Tab Groups) | Safari, Orion | L | done in 1.2.0 |
 | - | Unified title bar, tab close buttons, default Favorites, blue icon in dark mode | Safari | S | done (bd2fe27 and next) |
 
 ## Ingested 2026-10-30
